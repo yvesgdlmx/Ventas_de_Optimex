@@ -1,0 +1,400 @@
+:root {
+  --Blanco: #fff;
+  --FuenteUbuntu: "Ubuntu", sans-serif;
+  --Probando: #ebf2f3;
+  --Gris: #696969;
+  --GrisClaro: #ccc9c9;
+  --Azul:  #04acec;
+  --AzulHover: #0586b9;
+  --Header: #5b5969;
+}
+
+/* Estilos generales */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--FuenteUbuntu);
+}
+
+html {
+  box-sizing: border-box;
+  height: 100%;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* Utilidades - Helpers */
+
+.mt {
+  margin-top: 2rem;
+}
+
+/*Login*/
+.login {
+  position: relative;
+  right: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login__contenedor {
+  padding: 1rem 3rem 2rem 3rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.login__label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+  color: var(--GrisOcuro);
+  font-size: 1.2rem;
+}
+
+.login__input {
+  min-width: 30rem;
+  padding: .6rem;
+  border: none;
+  background-color: var(--GrisAzulado);
+  border-radius: .5rem;
+}
+
+.login__boton {
+  background-color: var(--Azul);
+  color: var(--Blanco);
+  border: none;
+  padding: .5rem 1rem;
+  margin-top: 1rem;
+  transition-property: background-color;
+  transition-duration: .3s;
+  font-weight: bold;
+}
+
+.login__boton:hover {
+  background-color: var(--AzulHover);
+  cursor: pointer;
+}
+
+.navegacion {
+  display: flex;
+  justify-content: space-between;
+  gap: 2.5rem;
+  margin-top: 1rem;
+}
+
+.navegacion__p {
+  color: var(--GrisMedio);
+  transition-property: color;
+  transition-duration: .3s;
+}
+
+.navegacion__p:hover {
+  color: var(--GrisOcuro);
+}
+
+/*Botones cerrar e inicar sesion*/
+.header__campo-auth {
+  position: relative;
+  left: 11rem;
+}
+
+.boton__auth {
+  border: none;
+  background-color: var(--AzulOscuro);
+  padding: .5rem 1rem;
+  color: var(--Blanco);
+  font-weight: bold;
+  transition-property: background-color;
+  transition-duration: .3s;
+  border-radius: .2rem;
+}
+
+.boton__auth:hover {
+  background-color: var(--AzulHover);
+  cursor: pointer;
+}
+
+
+/* Estilos del header */
+.header {
+  max-height: 10rem;
+}
+
+.header__logo {
+  margin-left: 8.2rem;
+}
+
+
+/* Estilos del sidebar */
+.sidebar {
+  background-color: var(--Blanco);
+  width: 200px;
+  padding: 30px 20px;
+  position: fixed;
+  top: 134px;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto; /* Permite el desplazamiento vertical */
+  max-height: calc(100vh - 134px); /* Asegura que el sidebar no exceda la altura de la ventana */
+  scrollbar-width: none; 
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar__campo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.sidebar__link {
+  text-decoration: none;
+  padding: 1.2rem .2rem .7rem .2rem;
+  border-radius: .6rem;
+  transition-property: background-color;
+  transition-duration: .4s;
+}
+
+.sidebar__link:hover {
+  background-color: var(--Probando);
+}
+
+.sidebar__link-activo {
+  background-color: var(--Probando);
+}
+
+
+.sidebar__logo {
+  filter: invert(45%);
+}
+
+.sidebar__texto {
+  font-size: 1rem;
+  letter-spacing: 1px;
+  font-weight: bold;
+  color: var(--Gris);
+  margin: 0;
+}
+
+/* Estilos del main */
+.main {
+  background-color: var(--Probando);
+  padding: 10px;
+  padding-bottom: 20rem;
+  overflow-y: auto; /* Habilita el desplazamiento vertical */
+  /* Ancho del main es el 100% menos el ancho del sidebar */
+}
+
+.main__contenido {
+  padding: 2rem;
+}
+/* Estilos para hacer que el main sea deslizable */
+/*.main__scrollable {
+  height: 1000px; /* Altura de ejemplo para mostrar el desplazamiento */
+/*}
+
+/* Index */
+.index__heading {
+  display: flex;
+  gap: 32.5rem;
+  align-items: center;
+}
+
+.index__h2 {
+  color: var(--Azul);
+  margin: .5rem;
+}
+
+.index__p {
+  color: var(--Gris);
+}
+
+.index__centrado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilos para tablas */
+.tabla {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--Blanco);
+  padding: 2rem;
+}
+
+.tabla__table {
+  border: 1px solid var(--GrisClaro);
+  border-collapse: collapse;
+  width: 60rem;
+}
+
+.tabla__thead {
+  background-color: var(--Azul);
+  border-collapse: collapse;
+}
+
+.tabla__th {
+  padding: .5rem;
+  color: var(--Blanco);
+}
+
+.tabla__td {
+  padding: .5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--GrisClaro);
+  color: var(--Gris);
+}
+
+.tabla__total {
+  margin-top: 1rem;
+  border-top: 1px solid var(--Gris);
+  display: flex;
+  justify-content: space-around;
+}
+
+.tabla__p {
+  color: var(--Gris);
+}
+
+.tabla__span {
+  font-weight: bold;
+}
+/* Selectores */
+
+.selectores {
+  position: relative;
+  right: 22.5rem;
+  display: flex;
+  gap: 1.7rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  margin-top: .5rem;
+}
+
+.selectores__label {
+  color: var(--Gris);
+}
+
+.selectores__select {
+  padding: .3rem 1.2rem;
+  border: 1px solid var(--GrisClaro);
+}
+
+/*Paginador*/
+.paginador {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.paginador__boton {
+  padding: .5rem 1rem;
+  border: none;
+  background-color: var(--Azul);
+  color: var(--Blanco);
+  font-weight: bold;
+  min-width: 7rem;
+  transition-property: background-color;
+  transition-duration: .3s;
+}
+
+.paginador__boton:hover {
+  background-color: var(--AzulHover);
+}
+
+/* PDF */
+
+.pdf {
+  display: flex;
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-right: .5rem;
+  justify-content: flex-end;
+  position: relative;
+  left: 25rem;
+}
+
+.pdf:hover {
+  cursor: pointer;
+}
+
+.custom-pdf-link {
+  text-decoration: none; /* Quita el subrayado */
+  color: inherit; /* Hereda el color del texto del padre */
+}
+
+/* Si necesitas anular otros estilos predeterminados, puedes añadirlos aquí */
+.custom-pdf-link:hover,
+.custom-pdf-link:focus,
+.custom-pdf-link:active {
+  text-decoration: none; /* Asegúrate de que el subrayado no aparezca en estos estados */
+  color: inherit; /* Asegúrate de que el color no cambie en estos estados */
+}
+
+/* Estilos temporales, para la prueba del PDF */
+
+.head {
+  background-color: var(--Azul);
+  height: 2.5rem;
+}
+
+.prueba__flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 63rem;
+  margin: 0 auto;
+}
+
+.prueba__img {
+  width: 20rem;
+}
+
+.prueba__h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.prueba__p {
+  font-size: .9rem;
+  color: var(--Header);
+}
+
+.border {
+  border-bottom: 1px solid var(--Azul);
+}
+
+.mt {
+  margin-top: 2rem;
+}
+
+.mb {
+  margin-bottom: 2rem;
+}
+
+.text-aling {
+  text-align: center;
+}
+
+.prueba-campo__flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bb {
+  border-bottom: 1px solid var(--Azul);
+}
+
+.centrar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
