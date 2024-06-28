@@ -162,7 +162,7 @@ const Index = () => {
             <p className="tabla__p">Total General: <br/><span className="tabla__span">${totalGeneral}</span></p>
           </div>
         </div>
-        {/*<div>
+        <div>
           <PDFDownloadLink
             document={<Pdf2 data={pdfData} />}
             fileName={`ventas_${mes}.pdf`}
@@ -175,7 +175,7 @@ const Index = () => {
               </div>
             )}
           </PDFDownloadLink>
-        </div>*/}
+        </div>
       </div>
       <div>
         <TablaCobrados mes={mes} />

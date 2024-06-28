@@ -1,5 +1,7 @@
 import React from 'react';
 import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
+import { parseISO, format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 
 // Definición de estilos
 const styles = StyleSheet.create({
@@ -57,6 +59,9 @@ const styles = StyleSheet.create({
   mb: {
     marginBottom: '20px',
   },
+  ml: {
+    marginLeft: '40px',
+  },
   prueba_campo__flex: {
     display: 'flex',
     flexDirection: 'column',
@@ -97,7 +102,12 @@ const Pdf2 = ({ data }) => {
   const totalGeneral = data.reduce((sum, item) => sum + item.total, 0);
 
   // Obtener la fecha formateada (YYYY-MM)
-  const formattedDate = data.length > 0 ? data[0].fecha.slice(0, 7) : '';
+  const formattedDate = data.length > 0 ? format(parseISO(data[0].fecha), 'yyyy-MM', { locale: enUS }) : '';
+
+  // Obtener el mes y año formateados para el texto de resumen
+  const monthYearText = data.length > 0 
+    ? `The values represent the total sum of sales for the month of ${format(parseISO(data[0].fecha), 'MMMM', { locale: enUS })} in the year ${format(parseISO(data[0].fecha), 'yyyy')}.`
+    : 'The values represent the total sum of sales.';
 
   return (
     <Document>
@@ -108,75 +118,59 @@ const Pdf2 = ({ data }) => {
             <View style={styles.prueba__flex}>
               <Image src="/img/logo_real.png" style={styles.prueba__img} />
               <View style={styles.prueba__datos}>
-                <Text style={styles.prueba__p}>Fecha de orden: <Text style={styles.prueba__span}>2024/06/10</Text></Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.bb}>
-            <View style={[styles.prueba__flex, styles.mt, styles.mb]}>
-              <View style={styles.prueba_campo__flex}>
-                <Text style={styles.prueba__h2}>Dirección:</Text>
-                <Text style={styles.prueba__p}>Calle cualquiera #543 calle cualquiera, colonia cualquiera.</Text>
-              </View>
-              <View style={styles.prueba_campo__flex}>
-                <Text style={styles.prueba__h2}>Email:</Text>
-                <Text style={styles.prueba__p}>empresa_cualquiera@correo.com</Text>
-              </View>
-              <View style={styles.prueba_campo__flex}>
-                <Text style={[styles.prueba__h2, styles.position]}>Teléfono:</Text>
-                <Text style={styles.prueba__p}>33-98-67-56-54</Text>
+                <Text style={styles.prueba__p}>Order Date: <Text style={styles.prueba__span}>{formattedDate}</Text></Text>
               </View>
             </View>
           </View>
         </View>
         <View style={styles.bb2}>
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Fecha</Text>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Fecha</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Lens Totals</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Coatings Totals</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Tint Totals</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Total</Text>
+              </View>
             </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Lens Totals</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Coatings Totals</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Tint Totals</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Total</Text>
+            <View style={styles.tableRow}>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{formattedDate}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>${totalLensPrice.toFixed(2)}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>${totalCoatingsPrice.toFixed(2)}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>${totalTintPrice.toFixed(2)}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>${totalGeneral.toFixed(2)}</Text>
+              </View>
             </View>
           </View>
-          <View style={styles.tableRow}>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{formattedDate}</Text>
+          <View style={styles.totalSection}>
+            <View>
+              <Text style={styles.totalText}>Grand Total: </Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>${totalLensPrice.toFixed(2)}</Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>${totalCoatingsPrice.toFixed(2)}</Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>${totalTintPrice.toFixed(2)}</Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>${totalGeneral.toFixed(2)}</Text>
+            <View>
+              <Text style={styles.totalText}> ${totalGeneral.toFixed(2)}</Text>
             </View>
           </View>
-        </View>
-        <View style={styles.totalSection}>
-            <View>
-                <Text style={styles.totalText}>Total General: </Text>
-            </View>
-            <View>
-                <Text style={styles.totalText}> ${totalGeneral.toFixed(2)}</Text>
-            </View>
-        </View>
-        <View>
-            <Text style={[styles.prueba__p, styles.padding, styles.mt, styles.mb]}>Los siguientes valores corresponden a la suma total de las ventas del mes de junio del año 2024.</Text>
-        </View>
+          <View>
+            <Text style={[styles.prueba__p, styles.padding, styles.mt, styles.mb, styles.ml]}>{monthYearText}</Text>
+          </View>
         </View>
       </Page>
     </Document>
