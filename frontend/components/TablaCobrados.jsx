@@ -13,13 +13,18 @@ const TablaCobrados = ({ mes }) => {
     const obtenerRegistros = async () => {
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
       console.log("Datos obtenidos de la API:", data);
-      // Filtrar los registros que tengan TAT <= 6.0
-      const registrosFiltrados = data.filter((registro) => parseFloat(registro.TAT) <= 6.0);
-      // Ordenar los registros por fecha
-      const registrosOrdenados = registrosFiltrados.sort((a, b) => new Date(a.ShipDate) - new Date(b.ShipDate));
+
+      // Ordenar los registros por número de paciente (Patient)
+      const registrosOrdenados = data.sort((a, b) => {
+        const patientA = parseFloat(a.Patient) || 0;
+        const patientB = parseFloat(b.Patient) || 0;
+        return patientA - patientB;
+      });
+
       setRegistros(registrosOrdenados);
       setPdfData(registrosOrdenados); // Actualizar los datos del PDF
     };
+
     obtenerRegistros();
   }, [mes]);
 

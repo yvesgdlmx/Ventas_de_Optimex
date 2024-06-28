@@ -13,13 +13,21 @@ const TablaNoCobrados = ({ mes }) => {
     const obtenerRegistros = async () => {
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
       console.log("Datos obtenidos de la API:", data);
+
       // Filtrar los registros que tengan TAT > 6.0
       const registrosFiltrados = data.filter(registro => parseFloat(registro.TAT) > 6.0);
-      // Ordenar los registros por fecha
-      const registrosOrdenados = registrosFiltrados.sort((a, b) => new Date(a.ShipDate) - new Date(b.ShipDate));
+
+      // Ordenar los registros por número de paciente (Patient)
+      const registrosOrdenados = registrosFiltrados.sort((a, b) => {
+        const patientA = parseFloat(a.Patient) || 0;
+        const patientB = parseFloat(b.Patient) || 0;
+        return patientA - patientB;
+      });
+
       setRegistros(registrosOrdenados);
       setPdfData(registrosOrdenados); // Actualizar los datos del PDF
     };
+
     obtenerRegistros();
   }, [mes]);
 
@@ -76,15 +84,16 @@ const TablaNoCobrados = ({ mes }) => {
                 const tintPrice = parseFloat(registro.TintPrice || 0);
                 const total = lensPrice + coatingsPrice + tintPrice;
 
-                console.log("Registro:", registro);
+                console.log("Registro completo:", registro);
                 console.log("Lens Price:", lensPrice);
                 console.log("Coatings Price:", coatingsPrice);
                 console.log("Tint Price:", tintPrice);
+                console.log("Patient:", registro.Patient);
 
                 return (
                   <tr className="tabla__tr" key={index}>
                     <td className="tabla__td">{registro.ShipDate}</td>
-                    <td className="tabla__td">{registro.Patient}</td>
+                    <td className="tabla__td">{registro.Patient || 'N/A'}</td>
                     <td className="tabla__td">${lensPrice.toFixed(2)}</td>
                     <td className="tabla__td">${coatingsPrice.toFixed(2)}</td>
                     <td className="tabla__td">${tintPrice.toFixed(2)}</td>
