@@ -1,85 +1,198 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
+import { parseISO, format } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 
+// Definición de estilos
 const styles = StyleSheet.create({
-  page: { padding: 30 },
-  header: {
-   fontSize: 12
+  head: {
+    backgroundColor: '#04acec', // Reemplaza var(--Azul) con el color que desees
+    height: '15',
+    width: '100%',
   },
-  logo: { width: 100 },
-  companyDetails: {
-    
+  prueba: {
+    paddingHorizontal: '20',
+    marginTop: '20'
+  },
+  prueba__flex: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: '10px'
+  },
+  prueba__img: {
+    width: '150px',
+  },
+  prueba__datos: {
+    marginLeft: '20px',
+  },
+  prueba__h2: {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#5b5969',
+  },
+  prueba__h1: {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#5b5969',
+  },
+  prueba__p: {
+    fontSize: '12px',
+    color: '#696969',
+  },
+  prueba__span: {
+    fontWeight: 'bold',
+  },
+  border: {
+    borderBottom: '0.5px solid #696969', // Reemplaza var(--Azul) con el color que desees
+    marginBottom: '10px',
+    paddingBottom: '10px',
+  },
+  padding: {
+    paddingHorizontal: '20px',
+  },
+  mt: {
+    marginTop: '20px',
+  },
+  mb: {
+    marginBottom: '20px',
+  },
+  ml: {
+    marginLeft: '40px',
+  },
+  prueba_campo__flex: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    width: '45%',
+    gap: '5',
+    marginLeft: '20',
+  },
+  bb: {
+    borderBottom: '0.5px solid #696969', // Reemplaza var(--Azul) con el color que desees
+    paddingBottom: '10px',
+  },
+  bb2: {
+    borderBottom: '0.5px solid #696969',
+    paddingBottom: '10px',
+    marginHorizontal: '20px'
+  },
+  position:  {
+    position: 'relative',
+    bottom: '7.5px'
   },
   section: { marginBottom: 10 },
-  table: { display: "table", width: "auto", margin: "10px 0" },
+  table: { display: "table", width: "auto", margin: "40px 20px" },
   tableRow: { flexDirection: "row" },
-  tableColHeader: { width: "20%", borderStyle: "solid", borderWidth: 1, backgroundColor: "#bdbdbd" },
-  tableCol: { width: "20%", borderStyle: "solid", borderWidth: 1 },
-  tableCellHeader: { margin: "auto", marginTop: 5, fontSize: 10, fontWeight: "bold" },
-  tableCell: { margin: "auto", marginTop: 5, fontSize: 10 },
-  totalSection: { marginTop: 20, textAlign: 'right' },
-  totalText: { fontSize: 12, fontWeight: 'bold' },
+  tableColHeader: { width: "20%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
+  tableCol: { width: "20%", borderStyle: "dashed", borderWidth: 0.5 },
+  tableCellHeader: { margin: "auto", marginTop: 5, fontSize: 12, fontWeight: 'extrabold' },
+  tableCell: { margin: "auto", marginTop: 5, fontSize: 10, padding: '10', color: '#5b5969'},
+  totalSection: { marginTop: 10, textAlign: 'right', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: '20', borderStyle: 'solid', borderWidth: '0.5', padding: '10', borderRadius: '5px', marginBottom: '20px' },
+  totalText: { fontSize: 12, fontWeight: 'bold', marginRight: '25', color: '#5b5969' },
 });
 
 const Pdf = ({ data }) => {
-  const totalGeneral = data.reduce((acc, total) => acc + total.total, 0);
+  // Agrupar los datos por fecha
+  const groupedData = data.reduce((acc, item) => {
+    const date = format(parseISO(item.fecha), 'yyyy-MM-dd');
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(item);
+    return acc;
+  }, {});
+
+  // Calcular las sumas diarias
+  const dailySums = Object.keys(groupedData).map(date => {
+    const items = groupedData[date];
+    const totalLensPrice = items.reduce((sum, item) => sum + item.LensPrice, 0);
+    const totalCoatingsPrice = items.reduce((sum, item) => sum + item.CoatingsPrice, 0);
+    const totalTintPrice = items.reduce((sum, item) => sum + item.TintPrice, 0);
+    const totalGeneral = items.reduce((sum, item) => sum + item.total, 0);
+    return {
+      date,
+      totalLensPrice,
+      totalCoatingsPrice,
+      totalTintPrice,
+      totalGeneral
+    };
+  });
+
+  // Obtener la fecha formateada (YYYY-MM)
+  const formattedDate = data.length > 0 ? format(parseISO(data[0].fecha), 'yyyy-MM', { locale: enUS }) : '';
+
+  // Obtener el mes y año formateados para el texto de resumen
+  const monthYearText = data.length > 0 
+    ? `The values represent the total sum of sales for the month of ${format(parseISO(data[0].fecha), 'MMMM', { locale: enUS })} in the year ${format(parseISO(data[0].fecha), 'yyyy')}.`
+    : 'The values represent the total sum of sales.';
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <Image style={styles.logo} src="/img/logo_real.png" />
-          <View style={styles.companyDetails}>
-            <Text>Laboratorio Optimex (S.A. de C.V.)</Text>
-            <Text>Dirección: Calle Falsa 123, Ciudad, País</Text>
-            <Text>Teléfono: +52 123 456 7890</Text>
-            <Text>Email: contacto@optimex.com</Text>
-            <Text>Fecha: {new Date().toLocaleDateString()}</Text>
+      <Page size="A4" style={styles.body}>
+        <View style={styles.head}></View>
+        <View style={styles.prueba}>
+          <View style={styles.border}>
+            <View style={styles.prueba__flex}>
+              <Image src="/img/logo_real.png" style={styles.prueba__img} />
+              <View style={styles.prueba__datos}>
+                <Text style={styles.prueba__p}>Order Date: <Text style={styles.prueba__span}>{formattedDate}</Text></Text>
+              </View>
+            </View>
           </View>
         </View>
-        <View style={styles.section}>
-          <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>Factura de Ventas Mensuales</Text>
-        </View>
-        <View style={styles.table}>
-          <View style={styles.tableRow}>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Fecha</Text>
+        <View style={styles.bb2}>
+          <View>
+            <Text style={[styles.prueba__p, styles.padding, styles.mt, styles.mb, styles.ml]}>{monthYearText}</Text>
+          </View>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Fecha</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Lens Totals</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Coatings Totals</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Tint Totals</Text>
+              </View>
+              <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Total</Text>
+              </View>
             </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Lens Price</Text>
+            {dailySums.map((sum, index) => (
+              <View style={styles.tableRow} key={index}>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>{sum.date}</Text>
+                </View>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>${sum.totalLensPrice.toFixed(2)}</Text>
+                </View>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>${sum.totalCoatingsPrice.toFixed(2)}</Text>
+                </View>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>${sum.totalTintPrice.toFixed(2)}</Text>
+                </View>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>${sum.totalGeneral.toFixed(2)}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+          <View style={styles.totalSection}>
+            <View>
+              <Text style={styles.totalText}>Grand Total: </Text>
             </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Coatings Price</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Tint Price</Text>
-            </View>
-            <View style={styles.tableColHeader}>
-              <Text style={styles.tableCellHeader}>Total</Text>
+            <View>
+              <Text style={styles.totalText}> ${dailySums.reduce((sum, item) => sum + item.totalGeneral, 0).toFixed(2)}</Text>
             </View>
           </View>
-          {data.map((total, index) => (
-            <View style={styles.tableRow} key={index}>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>{total.fecha}</Text>
-              </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>${total.LensPrice.toFixed(2)}</Text>
-              </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>${total.CoatingsPrice.toFixed(2)}</Text>
-              </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>${total.TintPrice.toFixed(2)}</Text>
-              </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>${total.total.toFixed(2)}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-        <View style={styles.totalSection}>
-          <Text style={styles.totalText}>Total General: ${totalGeneral.toFixed(2)}</Text>
         </View>
       </Page>
     </Document>

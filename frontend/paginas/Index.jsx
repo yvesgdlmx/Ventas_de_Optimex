@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import clienteAxios from "../config/clienteAxios";
 import { format, parseISO } from "date-fns";
 import { PDFDownloadLink } from '@react-pdf/renderer';
+import Pdf from "../components/Pdf";
 import Pdf2 from "../components/Pdf2";
 import TablaCobrados from "../components/TablaCobrados";
 import TablaNoCobrados from "../components/TablaNoCobrados";
@@ -162,19 +163,35 @@ const Index = () => {
             <p className="tabla__p">Total General: <br/><span className="tabla__span">${totalGeneral}</span></p>
           </div>
         </div>
-        <div>
-          <PDFDownloadLink
-            document={<Pdf2 data={pdfData} />}
-            fileName={`ventas_${mes}.pdf`}
-            className="custom-pdf-link"
-          >
-            {({ blob, url, loading, error }) => (
-              <div className="pdf">
-                <img src="/img/pdf.png" alt="Descargar PDF" width={50} />
-                <p className="pdf__p">{loading ? "Cargando documento..." : "Descargar pdf"}</p>
-              </div>
-            )}
-          </PDFDownloadLink>
+        <div className="pdf__flex">
+          <div>
+              <PDFDownloadLink
+                document={<Pdf data={pdfData} />}
+                fileName={`ventas_${mes}.pdf`}
+                className="custom-pdf-link"
+              >
+                {({ blob, url, loading, error }) => (
+                  <div className="pdf">
+                    <img src="/img/pdf.png" alt="Descargar PDF" width={50} />
+                    <p className="pdf__p">{loading ? "Cargando documento..." : "Descargar pdf detallado"}</p>
+                  </div>
+                )}
+              </PDFDownloadLink>
+            </div>
+            <div>
+              <PDFDownloadLink
+                document={<Pdf2 data={pdfData} />}
+                fileName={`ventas_${mes}.pdf`}
+                className="custom-pdf-link"
+              >
+                {({ blob, url, loading, error }) => (
+                  <div className="pdf">
+                    <img src="/img/pdf.png" alt="Descargar PDF" width={50} />
+                    <p className="pdf__p">{loading ? "Cargando documento..." : "Descargar pdf global"}</p>
+                  </div>
+                )}
+              </PDFDownloadLink>
+            </div>
         </div>
       </div>
       <div>

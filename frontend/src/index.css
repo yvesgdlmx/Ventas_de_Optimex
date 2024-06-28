@@ -338,6 +338,13 @@ html {
   color: inherit; /* Asegúrate de que el color no cambie en estos estados */
 }
 
+.pdf__flex {
+  position: relative;
+  right: 8.5rem;
+  display: flex;
+  align-items: center;
+}
+
 /* Estilos temporales, para la prueba del PDF */
 
 .head {
