@@ -11,21 +11,36 @@ const TablaNoCobrados = ({ mes }) => {
 
   useEffect(() => {
     const obtenerRegistros = async () => {
-      const { data } = await clienteAxios(`/orders/get-month/${mes}`);
-      console.log("Datos obtenidos de la API:", data);
+      try {
+        const { data } = await clienteAxios(`/orders/get-month/${mes}`);
+        console.log("Datos obtenidos de la API:", data);
 
-      // Filtrar los registros que tengan TAT > 6.0
-      const registrosFiltrados = data.filter(registro => parseFloat(registro.TAT) > 6.0);
+        // Verificar si los datos contienen el campo "poder"
+        data.forEach((registro, index) => {
+          console.log(`Registro ${index}:`, registro);
+          if ('poder' in registro) {
+            console.log(`Poder del registro ${index}:`, registro.poder);
+          } else {
+            console.log(`El registro ${index} no contiene el campo "poder"`);
+            registro.poder = 'N/A'; // Asignar 'N/A' si no existe
+          }
+        });
 
-      // Ordenar los registros por número de paciente (Patient)
-      const registrosOrdenados = registrosFiltrados.sort((a, b) => {
-        const patientA = parseFloat(a.Patient) || 0;
-        const patientB = parseFloat(b.Patient) || 0;
-        return patientA - patientB;
-      });
+        // Filtrar los registros que tengan TAT > 6.0
+        const registrosFiltrados = data.filter(registro => parseFloat(registro.TAT) > 6.0);
 
-      setRegistros(registrosOrdenados);
-      setPdfData(registrosOrdenados); // Actualizar los datos del PDF
+        // Ordenar los registros por número de paciente (Patient)
+        const registrosOrdenados = registrosFiltrados.sort((a, b) => {
+          const patientA = parseFloat(a.Patient) || 0;
+          const patientB = parseFloat(b.Patient) || 0;
+          return patientA - patientB;
+        });
+
+        setRegistros(registrosOrdenados);
+        setPdfData(registrosOrdenados); // Actualizar los datos del PDF
+      } catch (error) {
+        console.error("Error al obtener los registros:", error);
+      }
     };
 
     obtenerRegistros();
@@ -73,6 +88,7 @@ const TablaNoCobrados = ({ mes }) => {
                 <th className="tabla__th">Lens Total</th>
                 <th className="tabla__th">Coatings Total</th>
                 <th className="tabla__th">Tint Total</th>
+                <th className="tabla__th">Poder</th>
                 <th className="tabla__th">TAT</th>
                 <th className="tabla__th">Total</th>
               </tr>
@@ -83,13 +99,12 @@ const TablaNoCobrados = ({ mes }) => {
                 const coatingsPrice = parseFloat(registro.CoatingsPrice || 0);
                 const tintPrice = parseFloat(registro.TintPrice || 0);
                 const total = lensPrice + coatingsPrice + tintPrice;
-
                 console.log("Registro completo:", registro);
                 console.log("Lens Price:", lensPrice);
                 console.log("Coatings Price:", coatingsPrice);
                 console.log("Tint Price:", tintPrice);
                 console.log("Patient:", registro.Patient);
-
+                console.log("Poder:", registro.poder);
                 return (
                   <tr className="tabla__tr" key={index}>
                     <td className="tabla__td">{registro.ShipDate}</td>
@@ -97,6 +112,7 @@ const TablaNoCobrados = ({ mes }) => {
                     <td className="tabla__td">${lensPrice.toFixed(2)}</td>
                     <td className="tabla__td">${coatingsPrice.toFixed(2)}</td>
                     <td className="tabla__td">${tintPrice.toFixed(2)}</td>
+                    <td className="tabla__td">{registro.Poder || 'N/A'}</td>
                     <td className="tabla__td">{parseFloat(registro.TAT || 0).toFixed(2)}</td>
                     <td className="tabla__td">${total.toFixed(2)}</td>
                   </tr>

@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   tableColHeader: {
-    width: '20%',
+    width: '16.67%', // Ajustado para incluir la nueva columna
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#bfbfbf',
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   tableCol: {
-    width: '20%',
+    width: '16.67%', // Ajustado para incluir la nueva columna
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#bfbfbf',
@@ -154,8 +154,8 @@ const styles = StyleSheet.create({
   section: { marginBottom: 10 },
   table: { display: "table", width: "auto", margin: "40px 20px" },
   tableRow: { flexDirection: "row" },
-  tableColHeader: { width: "20%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
-  tableCol: { width: "20%", borderStyle: "dashed", borderWidth: 0.5 },
+  tableColHeader: { width: "16.67%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
+  tableCol: { width: "16.67%", borderStyle: "dashed", borderWidth: 0.5 },
   tableCellHeader: { margin: "auto", marginTop: 5, fontSize: 12, fontWeight: 'extrabold' },
   tableCell: { margin: "auto", marginTop: 5, fontSize: 10, padding: '10', color: '#5b5969'},
   totalSection: { marginTop: 10, textAlign: 'right', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: '20', borderStyle: 'solid', borderWidth: '0.5', padding: '10', borderRadius: '5px', marginBottom: '20px' },
@@ -214,6 +214,9 @@ const PdfNoCobrados = ({ data }) => {
                 <Text style={styles.tableCellHeader}>Tint</Text>
               </View>
               <View style={styles.tableColHeader}>
+                <Text style={styles.tableCellHeader}>Poder</Text>
+              </View>
+              <View style={styles.tableColHeader}>
                 <Text style={styles.tableCellHeader}>Total</Text>
               </View>
             </View>
@@ -238,6 +241,9 @@ const PdfNoCobrados = ({ data }) => {
                   </View>
                   <View style={styles.tableCol}>
                     <Text style={styles.tableCell}>${tintPrice.toFixed(2)}</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>{registro.Poder}</Text>
                   </View>
                   <View style={styles.tableCol}>
                     <Text style={styles.tableCell}>${total.toFixed(2)}</Text>

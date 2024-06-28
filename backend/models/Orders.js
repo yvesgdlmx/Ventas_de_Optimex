@@ -69,6 +69,10 @@ const Orders = db.define('orders', {
     Redo: {
         type: DataTypes.STRING(50),
         allowNull: false
+    }, 
+    Poder: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
     }
 }, 
     {

@@ -70,6 +70,7 @@ const TablaCobrados = ({ mes }) => {
                 <th className="tabla__th">Lens Total</th>
                 <th className="tabla__th">Coatings Total</th>
                 <th className="tabla__th">Tint Total</th>
+                <th className="tabla__th">Poder</th>
                 <th className="tabla__th">TAT</th>
                 <th className="tabla__th">Total</th>
               </tr>
@@ -94,6 +95,7 @@ const TablaCobrados = ({ mes }) => {
                     <td className="tabla__td">${lensPrice.toFixed(2)}</td>
                     <td className="tabla__td">${coatingsPrice.toFixed(2)}</td>
                     <td className="tabla__td">${tintPrice.toFixed(2)}</td>
+                    <td className="tabla__td">{registro.Poder || 'N/A'}</td>
                     <td className="tabla__td">{parseFloat(registro.TAT || 0).toFixed(2)}</td>
                     <td className="tabla__td">${total.toFixed(2)}</td>
                   </tr>
