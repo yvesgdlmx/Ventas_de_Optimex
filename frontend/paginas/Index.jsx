@@ -167,7 +167,7 @@ const Index = () => {
           <div>
               <PDFDownloadLink
                 document={<Pdf data={pdfData} />}
-                fileName={`ventas_${mes}.pdf`}
+                fileName={`ventas_detallado${mes}.pdf`}
                 className="custom-pdf-link"
               >
                 {({ blob, url, loading, error }) => (
@@ -181,7 +181,7 @@ const Index = () => {
             <div>
               <PDFDownloadLink
                 document={<Pdf2 data={pdfData} />}
-                fileName={`ventas_${mes}.pdf`}
+                fileName={`ventas_globales${mes}.pdf`}
                 className="custom-pdf-link"
               >
                 {({ blob, url, loading, error }) => (
