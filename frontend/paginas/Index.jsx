@@ -156,7 +156,6 @@ const Index = () => {
             />
           </div>
           <div className="tabla__total">
-            <p className="tabla__p">Fecha: <br/>{new Date().toLocaleDateString()}</p>
             <p className="tabla__p">Total Lens: <br/><span className="tabla__span">${totalLensPrice}</span></p>
             <p className="tabla__p">Total Coatings: <br/><span className="tabla__span">${totalCoatingsPrice}</span></p>
             <p className="tabla__p">Total Tint: <br/><span className="tabla__span">${totalTintPrice}</span></p>

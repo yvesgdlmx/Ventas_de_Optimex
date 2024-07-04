@@ -3,10 +3,9 @@ import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/render
 import { parseISO, format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 
-// Definición de estilos
 const styles = StyleSheet.create({
   head: {
-    backgroundColor: '#04acec', // Reemplaza var(--Azul) con el color que desees
+    backgroundColor: '#04acec',
     height: '15',
     width: '100%',
   },
@@ -46,7 +45,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   border: {
-    borderBottom: '0.5px solid #696969', // Reemplaza var(--Azul) con el color que desees
+    borderBottom: '0.5px solid #696969',
     marginBottom: '10px',
     paddingBottom: '10px',
   },
@@ -71,7 +70,7 @@ const styles = StyleSheet.create({
     marginLeft: '20',
   },
   bb: {
-    borderBottom: '0.5px solid #696969', // Reemplaza var(--Azul) con el color que desees
+    borderBottom: '0.5px solid #696969',
     paddingBottom: '10px',
   },
   bb2: {
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
   },
   section: { marginBottom: 10 },
   table: { display: "table", width: "auto", margin: "40px 20px" },
-  tableRow: { flexDirection: "row" },
+  tableRow: { flexDirection: "row", flexWrap: 'nowrap' }, // Agregar flexWrap: 'nowrap'
   tableColHeader: { width: "20%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
   tableCol: { width: "20%", borderStyle: "dashed", borderWidth: 0.5 },
   tableCellHeader: { margin: "auto", marginTop: 5, fontSize: 12, fontWeight: 'extrabold' },
@@ -95,7 +94,6 @@ const styles = StyleSheet.create({
 });
 
 const Pdf = ({ data }) => {
-  // Agrupar los datos por fecha
   const groupedData = data.reduce((acc, item) => {
     const date = format(parseISO(item.fecha), 'yyyy-MM-dd');
     if (!acc[date]) {
@@ -105,7 +103,6 @@ const Pdf = ({ data }) => {
     return acc;
   }, {});
 
-  // Calcular las sumas diarias
   const dailySums = Object.keys(groupedData).map(date => {
     const items = groupedData[date];
     const totalLensPrice = items.reduce((sum, item) => sum + item.LensPrice, 0);
@@ -121,10 +118,7 @@ const Pdf = ({ data }) => {
     };
   });
 
-  // Obtener la fecha formateada (YYYY-MM)
   const formattedDate = data.length > 0 ? format(parseISO(data[0].fecha), 'yyyy-MM', { locale: enUS }) : '';
-
-  // Obtener el mes y año formateados para el texto de resumen
   const monthYearText = data.length > 0 
     ? `The values represent the total sum of sales for the month of ${format(parseISO(data[0].fecha), 'MMMM', { locale: enUS })} in the year ${format(parseISO(data[0].fecha), 'yyyy')}.`
     : 'The values represent the total sum of sales.';
@@ -166,7 +160,7 @@ const Pdf = ({ data }) => {
               </View>
             </View>
             {dailySums.map((sum, index) => (
-              <View style={styles.tableRow} key={index}>
+              <View style={styles.tableRow} key={index} wrap={false}> {/* Agregar wrap={false} */}
                 <View style={styles.tableCol}>
                   <Text style={styles.tableCell}>{sum.date}</Text>
                 </View>

@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: 'row',
+    flexWrap: 'nowrap' // Agregar flexWrap: 'nowrap'
   },
   tableColHeader: {
     width: '12.5%', // Ajustado para incluir la nueva columna
@@ -168,7 +169,6 @@ const PdfCobrados = ({ data }) => {
   const totalCoatingsPrice = data.reduce((acc, registro) => acc + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
   const totalTintPrice = data.reduce((acc, registro) => acc + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
   const totalGeneral = data.reduce((acc, registro) => acc + (parseFloat(registro.LensPrice || 0) + parseFloat(registro.CoatingsPrice || 0) + parseFloat(registro.TintPrice || 0)), 0).toFixed(2);
-
   // Verificar si data no está vacío y tiene al menos un registro
   let formattedDate = '';
   if (data.length > 0 && data[0].ShipDate) {
@@ -229,7 +229,7 @@ const PdfCobrados = ({ data }) => {
               const tintPrice = parseFloat(registro.TintPrice || 0);
               const total = lensPrice + coatingsPrice + tintPrice;
               return (
-                <View style={styles.tableRow} key={index}>
+                <View style={styles.tableRow} key={index} wrap={false}> // Agregar wrap={false}
                   <View style={styles.tableCol}>
                     <Text style={styles.tableCell}>{registro.ShipDate}</Text>
                   </View>

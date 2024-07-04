@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   section: { marginBottom: 10 },
   table: { display: "table", width: "auto", margin: "40px 20px" },
-  tableRow: { flexDirection: "row" },
+  tableRow: { flexDirection: "row", flexWrap: 'nowrap' }, // Agregar flexWrap: 'nowrap'
   tableColHeader: { width: "20%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
   tableCol: { width: "20%", borderStyle: "dashed", borderWidth: 0.5 },
   tableCellHeader: { margin: "auto", marginTop: 5, fontSize: 12, fontWeight: 'extrabold' },
@@ -100,10 +100,8 @@ const Pdf2 = ({ data }) => {
   const totalCoatingsPrice = data.reduce((sum, item) => sum + item.CoatingsPrice, 0);
   const totalTintPrice = data.reduce((sum, item) => sum + item.TintPrice, 0);
   const totalGeneral = data.reduce((sum, item) => sum + item.total, 0);
-
   // Obtener la fecha formateada (YYYY-MM)
   const formattedDate = data.length > 0 ? format(parseISO(data[0].fecha), 'yyyy-MM', { locale: enUS }) : '';
-
   // Obtener el mes y año formateados para el texto de resumen
   const monthYearText = data.length > 0 
     ? `The values represent the total sum of sales for the month of ${format(parseISO(data[0].fecha), 'MMMM', { locale: enUS })} in the year ${format(parseISO(data[0].fecha), 'yyyy')}.`
@@ -142,7 +140,7 @@ const Pdf2 = ({ data }) => {
                 <Text style={styles.tableCellHeader}>Total</Text>
               </View>
             </View>
-            <View style={styles.tableRow}>
+            <View style={styles.tableRow} wrap={false}> {/* Agregar wrap={false} */}
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{formattedDate}</Text>
               </View>
