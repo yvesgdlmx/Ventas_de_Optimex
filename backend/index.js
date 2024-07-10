@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from'cors'
 import db from './config/db.js';
-import ordersRoutes from './routes/ordersRoute.js'
+import ordersRoutes from './routes/ordersRoutes.js'
 
 const app = express();
 app.use(express.json());

@@ -3,16 +3,21 @@ import clienteAxios from "../config/clienteAxios";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import PdfCobrados from "./pdf_components/PdfCobrados";
 
-const TablaCobrados = ({ mes }) => {
+const TablaCobrados = () => {
+  const [mes, setMes] = useState("06"); // Cambiado a junio para coincidir con tu consulta SQL
   const [registros, setRegistros] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const [pdfData, setPdfData] = useState([]);
   const registrosPorPagina = 10;
 
+  const handleMesChange = (e) => {
+    setMes(e.target.value);
+    setPaginaActual(1); // Resetear a la primera página cuando cambie el mes
+  };
+
   useEffect(() => {
     const obtenerRegistros = async () => {
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
-      console.log("Datos obtenidos de la API:", data);
 
       // Ordenar los registros por número de paciente (Patient)
       const registrosOrdenados = data.sort((a, b) => {
@@ -28,8 +33,6 @@ const TablaCobrados = ({ mes }) => {
     obtenerRegistros();
   }, [mes]);
 
-  console.log("Registros:", registros);
-
   // Calcular los registros actuales
   const indexOfLastRegistro = paginaActual * registrosPorPagina;
   const indexOfFirstRegistro = indexOfLastRegistro - registrosPorPagina;
@@ -44,12 +47,6 @@ const TablaCobrados = ({ mes }) => {
   const totalTintPrice = registros.reduce((acc, registro) => acc + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
   const totalGeneral = registros.reduce((acc, registro) => acc + (parseFloat(registro.LensPrice || 0) + parseFloat(registro.CoatingsPrice || 0) + parseFloat(registro.TintPrice || 0)), 0).toFixed(2);
 
-  // Añadir logs para depuración
-  console.log("Total Lens Price:", totalLensPrice);
-  console.log("Total Coatings Price:", totalCoatingsPrice);
-  console.log("Total Tint Price:", totalTintPrice);
-  console.log("Total General:", totalGeneral);
-
   // Cambiar página
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPaginas) {
@@ -60,6 +57,25 @@ const TablaCobrados = ({ mes }) => {
   return (
     <>
       <div className="centrar">
+      <div className="selectores">
+          <label className="selectores__label" htmlFor="">
+            Elige un mes:{" "}
+          </label>
+          <select className="selectores__select" value={mes} onChange={handleMesChange}>
+            <option className="selectores__option" value="01">Enero</option>
+            <option className="selectores__option" value="02">Febrero</option>
+            <option className="selectores__option" value="03">Marzo</option>
+            <option className="selectores__option" value="04">Abril</option>
+            <option className="selectores__option" value="05">Mayo</option>
+            <option className="selectores__option" value="06">Junio</option>
+            <option className="selectores__option" value="07">Julio</option>
+            <option className="selectores__option" value="08">Agosto</option>
+            <option className="selectores__option" value="09">Septiembre</option>
+            <option className="selectores__option" value="10">Octubre</option>
+            <option className="selectores__option" value="11">Noviembre</option>
+            <option className="selectores__option" value="12">Diciembre</option>
+          </select>
+        </div>
         <h2 className="index__h2 mt">Cobrados: </h2>
         <div className="tabla">
           <table className="tabla__table">
@@ -81,12 +97,6 @@ const TablaCobrados = ({ mes }) => {
                 const coatingsPrice = parseFloat(registro.CoatingsPrice || 0);
                 const tintPrice = parseFloat(registro.TintPrice || 0);
                 const total = lensPrice + coatingsPrice + tintPrice;
-
-                console.log("Registro completo:", registro);
-                console.log("Lens Price:", lensPrice);
-                console.log("Coatings Price:", coatingsPrice);
-                console.log("Tint Price:", tintPrice);
-                console.log("Patient:", registro.Patient);
 
                 return (
                   <tr className="tabla__tr" key={index}>

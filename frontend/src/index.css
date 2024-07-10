@@ -30,6 +30,20 @@ html {
   margin-top: 2rem;
 }
 
+.position {
+  position: relative;
+  left: 4.5rem;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.c-black {
+  color: var(--Gris);
+}
+
 /*Login*/
 .login {
   position: relative;
@@ -211,14 +225,52 @@ html {
   margin: .5rem;
 }
 
+.index__h2-black {
+  color: var(--Gris);
+  margin: .5rem;
+}
+
+
 .index__p {
   color: var(--Gris);
+  text-align: center;
+}
+
+.index__p-2 {
+  font-weight: bold;
+  color: var(--Blanco);
+  text-align: center;
 }
 
 .index__centrado {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.index__centrado-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.index__grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.index__campo {
+  padding: 1.5rem 1.2rem;
+  background-color: var(--Azul);
+  transition-property: background-color;
+  transition-duration: .3s;
+}
+
+.index__campo:hover {
+  background-color: var(--AzulHover);
 }
 
 /* Estilos para tablas */
@@ -268,6 +320,16 @@ html {
 }
 /* Selectores */
 
+.filtros {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.filtros__flex {
+  display: flex;
+  gap: 1rem;
+}
+
 .selectores {
   position: relative;
   right: 22.5rem;
@@ -285,6 +347,20 @@ html {
 .selectores__select {
   padding: .3rem 1.2rem;
   border: 1px solid var(--GrisClaro);
+}
+
+.selectores__boton {
+  border: none;
+  background-color: var(--Azul);
+  padding: 3.4px 20px;
+  color: var(--Blanco);
+  font-weight: bold;
+  transition-property: background-color;
+  transition-property: .3s;
+}
+
+.selectores__boton:hover {
+  background-color: var(--AzulHover);
 }
 
 /*Paginador*/
@@ -404,4 +480,38 @@ html {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Spinner CSS */
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.spinner div {
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+  background-color: #333;
+  border-radius: 100%;
+  animation: sk-bounce 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  animation-delay: -0.16s;
+}
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
 }

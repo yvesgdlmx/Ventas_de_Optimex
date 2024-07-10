@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import clienteAxios from "../config/clienteAxios";
 import { format, parseISO } from "date-fns";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import Pdf from "../components/Pdf";
-import Pdf2 from "../components/Pdf2";
-import TablaCobrados from "../components/TablaCobrados";
-import TablaNoCobrados from "../components/TablaNoCobrados";
+import Pdf from "./Pdf";
+import Pdf2 from "./Pdf2";
 
-const Index = () => {
+const TablasDiario = () => {
   const [mes, setMes] = useState("06"); // Cambiado a junio para coincidir con tu consulta SQL
   const [registros, setRegistros] = useState([]);
   const [totalesPorDia, setTotalesPorDia] = useState([]);
@@ -77,9 +75,6 @@ const Index = () => {
   const totalTintPrice = totalesPorDia.reduce((acc, total) => acc + total.TintPrice, 0).toFixed(2);
   const totalGeneral = totalesPorDia.reduce((acc, total) => acc + total.total, 0).toFixed(2);
 
-  // Añadir logs para depuración
-  console.log("Página Actual:", paginaActual);
-  console.log("Total Páginas:", totalPaginas);
 
   // Cambiar página
   const paginate = (pageNumber) => {
@@ -193,12 +188,8 @@ const Index = () => {
             </div>
         </div>
       </div>
-      <div>
-        <TablaCobrados mes={mes} />
-        <TablaNoCobrados mes={mes} />
-      </div>
     </div>
   );
 };
 
-export default Index;
+export default TablasDiario;
