@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import clienteAxios from "../config/clienteAxios";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import PdfCobrados from "./pdf_components/PdfCobrados";
@@ -15,9 +15,10 @@ const TablaCobrados = () => {
     setPaginaActual(1); // Resetear a la primera página cuando cambie el mes
   };
 
-  useEffect(() => {
-    const obtenerRegistros = async () => {
+  const obtenerRegistros = async () => {
+    try {
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
+      console.log("Datos recibidos:", data);
 
       // Ordenar los registros por número de paciente (Patient)
       const registrosOrdenados = data.sort((a, b) => {
@@ -25,13 +26,12 @@ const TablaCobrados = () => {
         const patientB = parseFloat(b.Patient) || 0;
         return patientA - patientB;
       });
-
       setRegistros(registrosOrdenados);
       setPdfData(registrosOrdenados); // Actualizar los datos del PDF
-    };
-
-    obtenerRegistros();
-  }, [mes]);
+    } catch (error) {
+      console.error("Error al obtener los registros:", error);
+    }
+  };
 
   // Calcular los registros actuales
   const indexOfLastRegistro = paginaActual * registrosPorPagina;
@@ -57,7 +57,7 @@ const TablaCobrados = () => {
   return (
     <>
       <div className="centrar">
-      <div className="selectores">
+        <div className="selectores">
           <label className="selectores__label" htmlFor="">
             Elige un mes:{" "}
           </label>
@@ -75,6 +75,7 @@ const TablaCobrados = () => {
             <option className="selectores__option" value="11">Noviembre</option>
             <option className="selectores__option" value="12">Diciembre</option>
           </select>
+          <button className="selectores__boton-2" onClick={obtenerRegistros}>Buscar</button>
         </div>
         <h2 className="index__h2 mt">Cobrados: </h2>
         <div className="tabla">
@@ -97,7 +98,6 @@ const TablaCobrados = () => {
                 const coatingsPrice = parseFloat(registro.CoatingsPrice || 0);
                 const tintPrice = parseFloat(registro.TintPrice || 0);
                 const total = lensPrice + coatingsPrice + tintPrice;
-
                 return (
                   <tr className="tabla__tr" key={index}>
                     <td className="tabla__td">{registro.ShipDate}</td>

@@ -1,52 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import clienteAxios from "../config/clienteAxios";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import PdfNoCobrados from "./pdf_components/PdfNoCobrados";
 
 const TablaNoCobrados = () => {
-  const [mes, setMes] = useState("06"); // Cambiado a junio para coincidir con tu consulta SQL
+  const [mes, setMes] = useState('07'); // Cambiado a junio para coincidir con tu consulta SQL
   const [registros, setRegistros] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const [pdfData, setPdfData] = useState([]);
   const registrosPorPagina = 10;
-    
+
   const handleMesChange = (e) => {
     setMes(e.target.value);
     setPaginaActual(1); // Resetear a la primera página cuando cambie el mes
   };
 
-  useEffect(() => {
-    const obtenerRegistros = async () => {
-      try {
-        const { data } = await clienteAxios(`/orders/get-month/${mes}`);
-        // Verificar si los datos contienen el campo "poder"
-        data.forEach((registro, index) => {
-          if ('poder' in registro) {
+  const obtenerRegistros = async () => {
+    try {
+      const { data } = await clienteAxios(`/orders/get-month/${mes}`);
+      console.log("Datos recibidos:", data);
 
-          } else {
-            registro.poder = 'N/A'; // Asignar 'N/A' si no existe
-          }
-        });
+      // Filtrar los registros que no han sido cobrados (LensPrice, TintPrice y CoatingsPrice con valor 0)
+      const registrosNoCobrados = data.filter(registro => 
+        parseFloat(registro.LensPrice || 0) === 0 && 
+        parseFloat(registro.CoatingsPrice || 0) === 0 && 
+        parseFloat(registro.TintPrice || 0) === 0
+      );
+      console.log("Registros no cobrados:", registrosNoCobrados);
 
-        // Filtrar los registros que tengan TAT > 6.0
-        const registrosFiltrados = data.filter(registro => parseFloat(registro.TAT) > 6.0);
-
-        // Ordenar los registros por número de paciente (Patient)
-        const registrosOrdenados = registrosFiltrados.sort((a, b) => {
-          const patientA = parseFloat(a.Patient) || 0;
-          const patientB = parseFloat(b.Patient) || 0;
-          return patientA - patientB;
-        });
-
-        setRegistros(registrosOrdenados);
-        setPdfData(registrosOrdenados); // Actualizar los datos del PDF
-      } catch (error) {
-        console.error("Error al obtener los registros:", error);
-      }
-    };
-
-    obtenerRegistros();
-  }, [mes]);
+      // Ordenar los registros por número de paciente (Patient)
+      const registrosOrdenados = registrosNoCobrados.sort((a, b) => {
+        const patientA = parseFloat(a.Patient) || 0;
+        const patientB = parseFloat(b.Patient) || 0;
+        return patientA - patientB;
+      });
+      setRegistros(registrosOrdenados);
+      setPdfData(registrosOrdenados); // Actualizar los datos del PDF
+    } catch (error) {
+      console.error("Error al obtener los registros:", error);
+    }
+  };
 
   // Calcular los registros actuales
   const indexOfLastRegistro = paginaActual * registrosPorPagina;
@@ -72,7 +65,7 @@ const TablaNoCobrados = () => {
   return (
     <>
       <div className="centrar mt">
-      <div className="selectores">
+        <div className="selectores">
           <label className="selectores__label" htmlFor="">
             Elige un mes:{" "}
           </label>
@@ -90,6 +83,7 @@ const TablaNoCobrados = () => {
             <option className="selectores__option" value="11">Noviembre</option>
             <option className="selectores__option" value="12">Diciembre</option>
           </select>
+          <button className="selectores__boton-2" onClick={obtenerRegistros}>Buscar</button>
         </div>
         <h2 className="index__h2">No cobrados: </h2>
         <div className="tabla">

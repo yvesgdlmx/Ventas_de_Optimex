@@ -135,11 +135,6 @@ html {
   max-height: 10rem;
 }
 
-.header__logo {
-  margin-left: 8.2rem;
-}
-
-
 /* Estilos del sidebar */
 .sidebar {
   background-color: var(--Blanco);
@@ -332,7 +327,6 @@ html {
 
 .selectores {
   position: relative;
-  right: 22.5rem;
   display: flex;
   gap: 1.7rem;
   align-items: center;
@@ -359,7 +353,21 @@ html {
   transition-property: .3s;
 }
 
+.selectores__boton-2 {
+  border: none;
+  background-color: var(--Azul);
+  padding: 6.5px 20px;
+  color: var(--Blanco);
+  font-weight: bold;
+  transition-property: background-color;
+  transition-property: .3s;
+}
+
 .selectores__boton:hover {
+  background-color: var(--AzulHover);
+}
+
+.selectores__boton-2:hover {
   background-color: var(--AzulHover);
 }
 
@@ -514,4 +522,101 @@ html {
   50% {
     transform: scale(1);
   }
+}
+
+
+/*Menu de prueba*/
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+div.contenedor {
+  width: 200px;
+  height: 250px;
+  float: left;
+  transition: height 0.4s;
+}
+
+div#uno {
+  background-color: rgb(208, 101, 3);
+}
+
+div#dos {
+  background-color: rgb(233, 147, 26);
+}
+
+div#tres {
+  background-color: rgb(22, 145, 190);
+}
+
+div#cuatro {
+  background-color: rgb(22, 107, 162);
+}
+
+div#cinco {
+  background-color: rgb(27, 54, 71);
+}
+
+div#seis {
+  background-color: rgb(21, 40, 54);
+}
+
+img.icon {
+  display: block;
+  margin: 50px auto;
+  background-color: rgba(255, 255, 255, 0.15);
+  width: 75px;
+  padding: 20px;
+  border-radius: 50%;
+  box-shadow: 0px 0px 0px 30px rgba(255, 255, 255, 0);
+  transition: box-shadow 0.4s;
+  filter: invert(100%);
+}
+
+p.texto {
+  font-size: 1.2em;
+  color: white;
+  text-align: center;
+  padding-top: 10px;
+  opacity: 0.6;
+  transition: padding-top 0.4s;
+}
+
+div.contenedor:hover {
+  height: 280px;
+}
+
+div.contenedor:hover p.texto {
+  padding-top: 30px;
+  opacity: 1;
+  font-size: 1.3em;
+}
+
+div.contenedor:hover img.icon {
+  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.6);
+}
+
+.texto-h1 {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--AzulHover);
+  margin-bottom: 3rem;
+  position: relative; /* Necesario para posicionar el ::after */
+}
+
+.texto-h1::after {
+  content: '';
+  display: block;
+  width: 27%; /* Puedes ajustar el ancho según tus necesidades */
+  height: 5px; /* Ajusta el grosor de la línea */
+  background: linear-gradient(to right, rgb(208, 101, 3) 50%, var(--AzulHover) 50%); /* Gradiente de negro a azul */
+  margin: 0.5rem auto 0; /* Ajusta el margen superior y centra la línea */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px; /* Ajusta la posición vertical de la línea */
+  border-radius: .5rem;
 }

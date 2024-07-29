@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import clienteAxios from "../config/clienteAxios";
 import { format, parseISO } from "date-fns";
 import { PDFDownloadLink } from '@react-pdf/renderer';
@@ -18,18 +18,13 @@ const TablasDiario = () => {
     setPaginaActual(1); // Resetear a la primera página cuando cambie el mes
   };
 
-  useEffect(() => {
-    const obtenerRegistros = async () => {
+  const obtenerYAgruparRegistros = async () => {
+    try {
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
       console.log("Datos obtenidos de la API:", data);
       setRegistros(data);
-    };
-    obtenerRegistros();
-  }, [mes]);
 
-  useEffect(() => {
-    const agruparPorDia = () => {
-      const agrupados = registros.reduce((acc, registro) => {
+      const agrupados = data.reduce((acc, registro) => {
         const fechaISO = parseISO(registro.ShipDate);
         const fechaFormateada = format(fechaISO, "yyyy-MM-dd");
         if (!acc[fechaFormateada]) {
@@ -57,9 +52,10 @@ const TablasDiario = () => {
       console.log("Totales agrupados por día:", totales);
       setTotalesPorDia(totales);
       setPdfData(totales); // Actualizar los datos del PDF
-    };
-    agruparPorDia();
-  }, [registros]);
+    } catch (error) {
+      console.error("Error al obtener los registros:", error);
+    }
+  };
 
   // Calcular los registros actuales
   const indexOfLastRegistro = paginaActual * registrosPorPagina;
@@ -74,7 +70,6 @@ const TablasDiario = () => {
   const totalCoatingsPrice = totalesPorDia.reduce((acc, total) => acc + total.CoatingsPrice, 0).toFixed(2);
   const totalTintPrice = totalesPorDia.reduce((acc, total) => acc + total.TintPrice, 0).toFixed(2);
   const totalGeneral = totalesPorDia.reduce((acc, total) => acc + total.total, 0).toFixed(2);
-
 
   // Cambiar página
   const paginate = (pageNumber) => {
@@ -109,6 +104,7 @@ const TablasDiario = () => {
             <option className="selectores__option" value="11">Noviembre</option>
             <option className="selectores__option" value="12">Diciembre</option>
           </select>
+          <button className="selectores__boton-2" onClick={obtenerYAgruparRegistros}>Buscar</button>
         </div>
         <h2 className="index__h2">Ventas totales por dia: </h2>
         <div className="tabla">
@@ -159,33 +155,33 @@ const TablasDiario = () => {
         </div>
         <div className="pdf__flex">
           <div>
-              <PDFDownloadLink
-                document={<Pdf data={pdfData} />}
-                fileName={`ventas_detallado${mes}.pdf`}
-                className="custom-pdf-link"
-              >
-                {({ blob, url, loading, error }) => (
-                  <div className="pdf">
-                    <img src="/img/pdf.png" alt="Descargar PDF" width={50} />
-                    <p className="pdf__p">{loading ? "Cargando documento..." : "Descargar pdf detallado"}</p>
-                  </div>
-                )}
-              </PDFDownloadLink>
-            </div>
-            <div>
-              <PDFDownloadLink
-                document={<Pdf2 data={pdfData} />}
-                fileName={`ventas_globales${mes}.pdf`}
-                className="custom-pdf-link"
-              >
-                {({ blob, url, loading, error }) => (
-                  <div className="pdf">
-                    <img src="/img/pdf.png" alt="Descargar PDF" width={50} />
-                    <p className="pdf__p">{loading ? "Cargando documento..." : "Descargar pdf global"}</p>
-                  </div>
-                )}
-              </PDFDownloadLink>
-            </div>
+            <PDFDownloadLink
+              document={<Pdf data={pdfData} />}
+              fileName={`ventas_detallado${mes}.pdf`}
+              className="custom-pdf-link"
+            >
+              {({ blob, url, loading, error }) => (
+                <div className="pdf">
+                  <img src="/img/pdf.png" alt="Descargar PDF" width={50} />
+                  <p className="pdf__p">{loading ? "Cargando documento..." : "Descargar pdf detallado"}</p>
+                </div>
+              )}
+            </PDFDownloadLink>
+          </div>
+          <div>
+            <PDFDownloadLink
+              document={<Pdf2 data={pdfData} />}
+              fileName={`ventas_globales${mes}.pdf`}
+              className="custom-pdf-link"
+            >
+              {({ blob, url, loading, error }) => (
+                <div className="pdf">
+                  <img src="/img/pdf.png" alt="Descargar PDF" width={50} />
+                  <p className="pdf__p">{loading ? "Cargando documento..." : "Descargar pdf global"}</p>
+                </div>
+              )}
+            </PDFDownloadLink>
+          </div>
         </div>
       </div>
     </div>

@@ -72,7 +72,7 @@ const TablaSemanalNoCobrados = () => {
   return (
     <>
       <div className="centrar">
-        <h2 className="index__h2 mt">Registros No Cobrados por Rango de Fechas: </h2>
+        <h2 className="index__h2 mt">Registros No Cobrados Por Fecha: </h2>
         <div className="filtros">
           <div className="filtros__flex">
             <input 
