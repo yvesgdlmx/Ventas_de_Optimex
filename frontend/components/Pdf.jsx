@@ -84,9 +84,9 @@ const styles = StyleSheet.create({
   },
   section: { marginBottom: 10 },
   table: { display: "table", width: "auto", margin: "40px 20px" },
-  tableRow: { flexDirection: "row", flexWrap: 'nowrap' }, // Agregar flexWrap: 'nowrap'
-  tableColHeader: { width: "20%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
-  tableCol: { width: "20%", borderStyle: "dashed", borderWidth: 0.5 },
+  tableRow: { flexDirection: "row", flexWrap: 'nowrap' },
+  tableColHeader: { width: "25%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
+  tableCol: { width: "25%", borderStyle: "dashed", borderWidth: 0.5 },
   tableCellHeader: { margin: "auto", marginTop: 5, fontSize: 12, fontWeight: 'extrabold' },
   tableCell: { margin: "auto", marginTop: 5, fontSize: 10, padding: '10', color: '#5b5969'},
   totalSection: { marginTop: 10, textAlign: 'right', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: '20', borderStyle: 'solid', borderWidth: '0.5', padding: '10', borderRadius: '5px', marginBottom: '20px' },
@@ -108,13 +108,11 @@ const Pdf = ({ data }) => {
     const totalLensPrice = items.reduce((sum, item) => sum + item.LensPrice, 0);
     const totalCoatingsPrice = items.reduce((sum, item) => sum + item.CoatingsPrice, 0);
     const totalTintPrice = items.reduce((sum, item) => sum + item.TintPrice, 0);
-    const totalGeneral = items.reduce((sum, item) => sum + item.total, 0);
     return {
       date,
       totalLensPrice,
       totalCoatingsPrice,
       totalTintPrice,
-      totalGeneral
     };
   });
 
@@ -147,25 +145,19 @@ const Pdf = ({ data }) => {
                 <Text style={styles.tableCellHeader}>Fecha</Text>
               </View>
               <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Lens Totals</Text>
-              </View>
-              <View style={styles.tableColHeader}>
                 <Text style={styles.tableCellHeader}>Coatings Totals</Text>
               </View>
               <View style={styles.tableColHeader}>
                 <Text style={styles.tableCellHeader}>Tint Totals</Text>
               </View>
               <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Total</Text>
+                <Text style={styles.tableCellHeader}>Lens Totals</Text>
               </View>
             </View>
             {dailySums.map((sum, index) => (
-              <View style={styles.tableRow} key={index} wrap={false}> {/* Agregar wrap={false} */}
+              <View style={styles.tableRow} key={index} wrap={false}>
                 <View style={styles.tableCol}>
                   <Text style={styles.tableCell}>{sum.date}</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>${sum.totalLensPrice.toFixed(2)}</Text>
                 </View>
                 <View style={styles.tableCol}>
                   <Text style={styles.tableCell}>${sum.totalCoatingsPrice.toFixed(2)}</Text>
@@ -174,17 +166,21 @@ const Pdf = ({ data }) => {
                   <Text style={styles.tableCell}>${sum.totalTintPrice.toFixed(2)}</Text>
                 </View>
                 <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>${sum.totalGeneral.toFixed(2)}</Text>
+                  <Text style={styles.tableCell}>${sum.totalLensPrice.toFixed(2)}</Text>
                 </View>
               </View>
             ))}
           </View>
           <View style={styles.totalSection}>
             <View>
-              <Text style={styles.totalText}>Grand Total: </Text>
+              <Text style={styles.totalText}>Grand Total Coatings: </Text>
+              <Text style={styles.totalText}>Grand Total Tint: </Text>
+              <Text style={styles.totalText}>Grand Total Lens: </Text>
             </View>
             <View>
-              <Text style={styles.totalText}> ${dailySums.reduce((sum, item) => sum + item.totalGeneral, 0).toFixed(2)}</Text>
+              <Text style={styles.totalText}>${dailySums.reduce((sum, item) => sum + item.totalCoatingsPrice, 0).toFixed(2)}</Text>
+              <Text style={styles.totalText}>${dailySums.reduce((sum, item) => sum + item.totalTintPrice, 0).toFixed(2)}</Text>
+              <Text style={styles.totalText}>${dailySums.reduce((sum, item) => sum + item.totalLensPrice, 0).toFixed(2)}</Text>
             </View>
           </View>
         </View>

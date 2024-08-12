@@ -61,7 +61,6 @@ const TablaSemanalCobrados = () => {
   const totalLensPrice = registros.reduce((acc, registro) => acc + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
   const totalCoatingsPrice = registros.reduce((acc, registro) => acc + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
   const totalTintPrice = registros.reduce((acc, registro) => acc + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
-  const totalGeneral = registros.reduce((acc, registro) => acc + (parseFloat(registro.LensPrice || 0) + parseFloat(registro.CoatingsPrice || 0) + parseFloat(registro.TintPrice || 0)), 0).toFixed(2);
 
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPaginas) {
@@ -103,12 +102,11 @@ const TablaSemanalCobrados = () => {
                 <tr className="tabla__tr">
                   <th className="tabla__th">Fecha</th>
                   <th className="tabla__th">Patient</th>
-                  <th className="tabla__th">Lens Total</th>
                   <th className="tabla__th">Coatings Total</th>
                   <th className="tabla__th">Tint Total</th>
                   <th className="tabla__th">Poder</th>
                   <th className="tabla__th">TAT</th>
-                  <th className="tabla__th">Total</th>
+                  <th className="tabla__th">Lens Total</th>
                 </tr>
               </thead>
               <tbody className="tabla__tbody">
@@ -117,23 +115,21 @@ const TablaSemanalCobrados = () => {
                     const lensPrice = parseFloat(registro.LensPrice || 0);
                     const coatingsPrice = parseFloat(registro.CoatingsPrice || 0);
                     const tintPrice = parseFloat(registro.TintPrice || 0);
-                    const total = lensPrice + coatingsPrice + tintPrice;
                     return (
                       <tr className="tabla__tr" key={index}>
                         <td className="tabla__td">{registro.ShipDate}</td>
                         <td className="tabla__td">{registro.Patient || 'N/A'}</td>
-                        <td className="tabla__td">${lensPrice.toFixed(2)}</td>
                         <td className="tabla__td">${coatingsPrice.toFixed(2)}</td>
                         <td className="tabla__td">${tintPrice.toFixed(2)}</td>
                         <td className="tabla__td">{registro.Poder || 'N/A'}</td>
                         <td className="tabla__td">{parseFloat(registro.TAT || 0).toFixed(2)}</td>
-                        <td className="tabla__td">${total.toFixed(2)}</td>
+                        <td className="tabla__td">${lensPrice.toFixed(2)}</td>
                       </tr>
                     );
                   })
                 ) : (
                   <tr>
-                    <td colSpan="8" className="tabla__td">No se encontraron registros</td>
+                    <td colSpan="7" className="tabla__td">No se encontraron registros</td>
                   </tr>
                 )}
               </tbody>
@@ -155,10 +151,9 @@ const TablaSemanalCobrados = () => {
               />
             </div>
             <div className="tabla__total">
-              <p className="tabla__p">Total Lens: <br/><span className="tabla__span">${totalLensPrice}</span></p>
               <p className="tabla__p">Total Coatings: <br/><span className="tabla__span">${totalCoatingsPrice}</span></p>
               <p className="tabla__p">Total Tint: <br/><span className="tabla__span">${totalTintPrice}</span></p>
-              <p className="tabla__p">Total General: <br/><span className="tabla__span">${totalGeneral}</span></p>
+              <p className="tabla__p">Total General: <br/><span className="tabla__span">${totalLensPrice}</span></p>
             </div>
           </div>
         )}

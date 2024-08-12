@@ -103,12 +103,11 @@ const TablaSemanalNoCobrados = () => {
                 <tr className="tabla__tr">
                   <th className="tabla__th">Fecha</th>
                   <th className="tabla__th">Patient</th>
-                  <th className="tabla__th">Lens Total</th>
                   <th className="tabla__th">Coatings Total</th>
                   <th className="tabla__th">Tint Total</th>
                   <th className="tabla__th">Poder</th>
                   <th className="tabla__th">TAT</th>
-                  <th className="tabla__th">Total</th>
+                  <th className="tabla__th">Lens Total</th>
                 </tr>
               </thead>
               <tbody className="tabla__tbody">
@@ -120,7 +119,6 @@ const TablaSemanalNoCobrados = () => {
                         <td className="tabla__td">{registro.Patient || 'N/A'}</td>
                         <td className="tabla__td">$0.00</td>
                         <td className="tabla__td">$0.00</td>
-                        <td className="tabla__td">$0.00</td>
                         <td className="tabla__td">{registro.Poder || 'N/A'}</td>
                         <td className="tabla__td">{parseFloat(registro.TAT || 0).toFixed(2)}</td>
                         <td className="tabla__td">$0.00</td>
@@ -129,7 +127,7 @@ const TablaSemanalNoCobrados = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan="8" className="tabla__td">No se encontraron registros</td>
+                    <td colSpan="7" className="tabla__td">No se encontraron registros</td>
                   </tr>
                 )}
               </tbody>

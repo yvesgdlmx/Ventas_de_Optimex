@@ -4,7 +4,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import PdfNoCobrados from "./pdf_components/PdfNoCobrados";
 
 const TablaNoCobrados = () => {
-  const [mes, setMes] = useState('07'); // Cambiado a junio para coincidir con tu consulta SQL
+  const [mes, setMes] = useState('07');
   const [registros, setRegistros] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const [pdfData, setPdfData] = useState([]);
@@ -12,22 +12,20 @@ const TablaNoCobrados = () => {
 
   const handleMesChange = (e) => {
     setMes(e.target.value);
-    setPaginaActual(1); // Resetear a la primera página cuando cambie el mes
+    setPaginaActual(1);
   };
 
   const obtenerRegistros = async () => {
     try {
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
       console.log("Datos recibidos:", data);
-
       // Filtrar los registros que no han sido cobrados (LensPrice, TintPrice y CoatingsPrice con valor 0)
-      const registrosNoCobrados = data.filter(registro => 
-        parseFloat(registro.LensPrice || 0) === 0 && 
-        parseFloat(registro.CoatingsPrice || 0) === 0 && 
+      const registrosNoCobrados = data.filter(registro =>
+        parseFloat(registro.LensPrice || 0) === 0 &&
+        parseFloat(registro.CoatingsPrice || 0) === 0 &&
         parseFloat(registro.TintPrice || 0) === 0
       );
       console.log("Registros no cobrados:", registrosNoCobrados);
-
       // Ordenar los registros por número de paciente (Patient)
       const registrosOrdenados = registrosNoCobrados.sort((a, b) => {
         const patientA = parseFloat(a.Patient) || 0;
@@ -35,7 +33,7 @@ const TablaNoCobrados = () => {
         return patientA - patientB;
       });
       setRegistros(registrosOrdenados);
-      setPdfData(registrosOrdenados); // Actualizar los datos del PDF
+      setPdfData(registrosOrdenados);
     } catch (error) {
       console.error("Error al obtener los registros:", error);
     }
@@ -44,7 +42,7 @@ const TablaNoCobrados = () => {
   // Calcular los registros actuales
   const indexOfLastRegistro = paginaActual * registrosPorPagina;
   const indexOfFirstRegistro = indexOfLastRegistro - registrosPorPagina;
-  const registrosActuales = registros.slice(indexOfFirstRegistro, indexOfLastRegistro);
+  const registrosActuales = registros.slice(indexOfFirstRegistro, indexOfFirstRegistro + registrosPorPagina);
 
   // Calcular el número total de páginas
   const totalPaginas = Math.ceil(registros.length / registrosPorPagina);
@@ -53,7 +51,7 @@ const TablaNoCobrados = () => {
   const totalLensPrice = registros.reduce((acc, registro) => acc + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
   const totalCoatingsPrice = registros.reduce((acc, registro) => acc + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
   const totalTintPrice = registros.reduce((acc, registro) => acc + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
-  const totalGeneral = registros.reduce((acc, registro) => acc + (parseFloat(registro.LensPrice || 0) + parseFloat(registro.CoatingsPrice || 0) + parseFloat(registro.TintPrice || 0)), 0).toFixed(2);
+  const totalGeneral = totalLensPrice; // Total General ahora solo proviene de Lens Total
 
   // Cambiar página
   const paginate = (pageNumber) => {
@@ -92,12 +90,11 @@ const TablaNoCobrados = () => {
               <tr className="tabla__tr">
                 <th className="tabla__th">Fecha</th>
                 <th className="tabla__th">Patient</th>
-                <th className="tabla__th">Lens Total</th>
                 <th className="tabla__th">Coatings Total</th>
                 <th className="tabla__th">Tint Total</th>
                 <th className="tabla__th">Poder</th>
                 <th className="tabla__th">TAT</th>
-                <th className="tabla__th">Total</th>
+                <th className="tabla__th">Lens Total</th>
               </tr>
             </thead>
             <tbody className="tabla__tbody">
@@ -105,17 +102,15 @@ const TablaNoCobrados = () => {
                 const lensPrice = parseFloat(registro.LensPrice || 0);
                 const coatingsPrice = parseFloat(registro.CoatingsPrice || 0);
                 const tintPrice = parseFloat(registro.TintPrice || 0);
-                const total = lensPrice + coatingsPrice + tintPrice;
                 return (
                   <tr className="tabla__tr" key={index}>
                     <td className="tabla__td">{registro.ShipDate}</td>
                     <td className="tabla__td">{registro.Patient || 'N/A'}</td>
-                    <td className="tabla__td">${lensPrice.toFixed(2)}</td>
                     <td className="tabla__td">${coatingsPrice.toFixed(2)}</td>
                     <td className="tabla__td">${tintPrice.toFixed(2)}</td>
                     <td className="tabla__td">{registro.Poder || 'N/A'}</td>
                     <td className="tabla__td">{parseFloat(registro.TAT || 0).toFixed(2)}</td>
-                    <td className="tabla__td">${total.toFixed(2)}</td>
+                    <td className="tabla__td">${lensPrice.toFixed(2)}</td>
                   </tr>
                 );
               })}

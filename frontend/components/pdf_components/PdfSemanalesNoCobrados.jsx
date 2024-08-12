@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     borderColor: '#bfbfbf',
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    margin: 'auto', // Centrar la tabla horizontalmente
   },
   tableRow: {
     flexDirection: 'row',
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   section: { marginBottom: 10 },
-  table: { display: "table", width: "auto", margin: "40px 20px" },
+  table: { display: "table", width: "auto", margin: "auto", marginTop: 40 },
   tableRow: { flexDirection: "row" },
   tableColHeader: { width: "12.5%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
   tableCol: { width: "12.5%", borderStyle: "dashed", borderWidth: 0.5 },
@@ -163,12 +164,12 @@ const styles = StyleSheet.create({
   totalText: { fontSize: 12, fontWeight: 'bold', marginRight: '25', color: '#5b5969' },
 });
 
-const PdfSemanalesCobrados = ({ data }) => {
+const PdfSemanalesNoCobrados = ({ data }) => {
   // Calcular totales
   const totalLensPrice = data.reduce((acc, registro) => acc + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
   const totalCoatingsPrice = data.reduce((acc, registro) => acc + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
   const totalTintPrice = data.reduce((acc, registro) => acc + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
-  const totalGeneral = data.reduce((acc, registro) => acc + (parseFloat(registro.LensPrice || 0) + parseFloat(registro.CoatingsPrice || 0) + parseFloat(registro.TintPrice || 0)), 0).toFixed(2);
+
   // Verificar si data no está vacío y tiene al menos un registro
   let formattedDate = '';
   if (data.length > 0 && data[0].ShipDate) {
@@ -205,9 +206,6 @@ const PdfSemanalesCobrados = ({ data }) => {
                 <Text style={styles.tableCellHeader}>Patient</Text>
               </View>
               <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Lens</Text>
-              </View>
-              <View style={styles.tableColHeader}>
                 <Text style={styles.tableCellHeader}>Coatings</Text>
               </View>
               <View style={styles.tableColHeader}>
@@ -220,24 +218,20 @@ const PdfSemanalesCobrados = ({ data }) => {
                 <Text style={styles.tableCellHeader}>TAT</Text>
               </View>
               <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Total</Text>
+                <Text style={styles.tableCellHeader}>Lens Total</Text>
               </View>
             </View>
             {data.map((registro, index) => {
               const lensPrice = parseFloat(registro.LensPrice || 0);
               const coatingsPrice = parseFloat(registro.CoatingsPrice || 0);
               const tintPrice = parseFloat(registro.TintPrice || 0);
-              const total = lensPrice + coatingsPrice + tintPrice;
               return (
-                <View style={styles.tableRow} key={index} wrap={false}> // Agregar wrap={false}
+                <View style={styles.tableRow} key={index} wrap={false}> {/* Agregar wrap={false} */}
                   <View style={styles.tableCol}>
                     <Text style={styles.tableCell}>{registro.ShipDate}</Text>
                   </View>
                   <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>{registro.Patient}</Text>
-                  </View>
-                  <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>${lensPrice.toFixed(2)}</Text>
+                    <Text style={styles.tableCell}>{registro.Patient || 'N/A'}</Text>
                   </View>
                   <View style={styles.tableCol}>
                     <Text style={styles.tableCell}>${coatingsPrice.toFixed(2)}</Text>
@@ -246,13 +240,13 @@ const PdfSemanalesCobrados = ({ data }) => {
                     <Text style={styles.tableCell}>${tintPrice.toFixed(2)}</Text>
                   </View>
                   <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>{registro.Poder}</Text>
+                    <Text style={styles.tableCell}>{registro.Poder || 'N/A'}</Text>
                   </View>
                   <View style={styles.tableCol}>
                     <Text style={styles.tableCell}>{registro.TAT}</Text>
                   </View>
                   <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>${total.toFixed(2)}</Text>
+                    <Text style={styles.tableCell}>${lensPrice.toFixed(2)}</Text>
                   </View>
                 </View>
               );
@@ -260,14 +254,13 @@ const PdfSemanalesCobrados = ({ data }) => {
           </View>
         </View>
         <View style={styles.totalSection}>
-          <Text style={styles.totalText}>Total Lens: ${totalLensPrice} -</Text>
           <Text style={styles.totalText}>Total Coatings: ${totalCoatingsPrice} -</Text>
           <Text style={styles.totalText}>Total Tint: ${totalTintPrice} -</Text>
-          <Text style={styles.totalText}>Grand Total: ${totalGeneral}</Text>
+          <Text style={styles.totalText}>Total Lens: ${totalLensPrice}</Text>
         </View>
       </Page>
     </Document>
   );
 };
 
-export default PdfSemanalesCobrados;
+export default PdfSemanalesNoCobrados;

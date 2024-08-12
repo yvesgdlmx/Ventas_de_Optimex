@@ -6,7 +6,7 @@ import Pdf from "./Pdf";
 import Pdf2 from "./Pdf2";
 
 const TablasDiario = () => {
-  const [mes, setMes] = useState("06"); // Cambiado a junio para coincidir con tu consulta SQL
+  const [mes, setMes] = useState("06");
   const [registros, setRegistros] = useState([]);
   const [totalesPorDia, setTotalesPorDia] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
@@ -15,7 +15,7 @@ const TablasDiario = () => {
 
   const handleMesChange = (e) => {
     setMes(e.target.value);
-    setPaginaActual(1); // Resetear a la primera página cuando cambie el mes
+    setPaginaActual(1);
   };
 
   const obtenerYAgruparRegistros = async () => {
@@ -23,7 +23,6 @@ const TablasDiario = () => {
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
       console.log("Datos obtenidos de la API:", data);
       setRegistros(data);
-
       const agrupados = data.reduce((acc, registro) => {
         const fechaISO = parseISO(registro.ShipDate);
         const fechaFormateada = format(fechaISO, "yyyy-MM-dd");
@@ -42,36 +41,25 @@ const TablasDiario = () => {
       const totales = Object.keys(agrupados).map((fecha) => ({
         fecha,
         ...agrupados[fecha],
-        total:
-          agrupados[fecha].LensPrice +
-          agrupados[fecha].CoatingsPrice +
-          agrupados[fecha].TintPrice,
       }));
-      // Ordenar los totales por fecha
       totales.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
       console.log("Totales agrupados por día:", totales);
       setTotalesPorDia(totales);
-      setPdfData(totales); // Actualizar los datos del PDF
+      setPdfData(totales);
     } catch (error) {
       console.error("Error al obtener los registros:", error);
     }
   };
 
-  // Calcular los registros actuales
   const indexOfLastRegistro = paginaActual * registrosPorPagina;
   const indexOfFirstRegistro = indexOfLastRegistro - registrosPorPagina;
   const registrosActuales = totalesPorDia.slice(indexOfFirstRegistro, indexOfLastRegistro);
-
-  // Calcular el número total de páginas
   const totalPaginas = Math.ceil(totalesPorDia.length / registrosPorPagina);
 
-  // Calcular totales
   const totalLensPrice = totalesPorDia.reduce((acc, total) => acc + total.LensPrice, 0).toFixed(2);
   const totalCoatingsPrice = totalesPorDia.reduce((acc, total) => acc + total.CoatingsPrice, 0).toFixed(2);
   const totalTintPrice = totalesPorDia.reduce((acc, total) => acc + total.TintPrice, 0).toFixed(2);
-  const totalGeneral = totalesPorDia.reduce((acc, total) => acc + total.total, 0).toFixed(2);
 
-  // Cambiar página
   const paginate = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPaginas) {
       console.log("Cambiando a la página:", pageNumber);
@@ -112,20 +100,18 @@ const TablasDiario = () => {
             <thead className="tabla__thead">
               <tr className="tabla__tr">
                 <th className="tabla__th">Fecha</th>
-                <th className="tabla__th">Lens Total</th>
                 <th className="tabla__th">Coatings Total</th>
                 <th className="tabla__th">Tint Total</th>
-                <th className="tabla__th">Total</th>
+                <th className="tabla__th">Lens Total</th>
               </tr>
             </thead>
             <tbody className="tabla__tbody">
               {registrosActuales.map((total, index) => (
                 <tr className="tabla__tr" key={index}>
                   <td className="tabla__td">{total.fecha}</td>
-                  <td className="tabla__td">${total.LensPrice.toFixed(2)}</td>
                   <td className="tabla__td">${total.CoatingsPrice.toFixed(2)}</td>
                   <td className="tabla__td">${total.TintPrice.toFixed(2)}</td>
-                  <td className="tabla__td">${total.total.toFixed(2)}</td>
+                  <td className="tabla__td">${total.LensPrice.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -147,10 +133,9 @@ const TablasDiario = () => {
             />
           </div>
           <div className="tabla__total">
-            <p className="tabla__p">Total Lens: <br/><span className="tabla__span">${totalLensPrice}</span></p>
             <p className="tabla__p">Total Coatings: <br/><span className="tabla__span">${totalCoatingsPrice}</span></p>
             <p className="tabla__p">Total Tint: <br/><span className="tabla__span">${totalTintPrice}</span></p>
-            <p className="tabla__p">Total General: <br/><span className="tabla__span">${totalGeneral}</span></p>
+            <p className="tabla__p">Total Lens: <br/><span className="tabla__span">${totalLensPrice}</span></p>
           </div>
         </div>
         <div className="pdf__flex">

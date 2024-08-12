@@ -6,7 +6,7 @@ import { enUS } from 'date-fns/locale';
 // Definición de estilos
 const styles = StyleSheet.create({
   head: {
-    backgroundColor: '#04acec', // Reemplaza var(--Azul) con el color que desees
+    backgroundColor: '#04acec',
     height: '15',
     width: '100%',
   },
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   border: {
-    borderBottom: '0.5px solid #696969', // Reemplaza var(--Azul) con el color que desees
+    borderBottom: '0.5px solid #696969',
     marginBottom: '10px',
     paddingBottom: '10px',
   },
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     marginLeft: '20',
   },
   bb: {
-    borderBottom: '0.5px solid #696969', // Reemplaza var(--Azul) con el color que desees
+    borderBottom: '0.5px solid #696969',
     paddingBottom: '10px',
   },
   bb2: {
@@ -85,9 +85,9 @@ const styles = StyleSheet.create({
   },
   section: { marginBottom: 10 },
   table: { display: "table", width: "auto", margin: "40px 20px" },
-  tableRow: { flexDirection: "row", flexWrap: 'nowrap' }, // Agregar flexWrap: 'nowrap'
-  tableColHeader: { width: "20%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
-  tableCol: { width: "20%", borderStyle: "dashed", borderWidth: 0.5 },
+  tableRow: { flexDirection: "row", flexWrap: 'nowrap' },
+  tableColHeader: { width: "25%", borderStyle: 'dashed', borderWidth: 0.5, backgroundColor: "#04acec", padding: '10', color: '#fff', fontWeight: 'bold' },
+  tableCol: { width: "25%", borderStyle: "dashed", borderWidth: 0.5 },
   tableCellHeader: { margin: "auto", marginTop: 5, fontSize: 12, fontWeight: 'extrabold' },
   tableCell: { margin: "auto", marginTop: 5, fontSize: 10, padding: '10', color: '#5b5969'},
   totalSection: { marginTop: 10, textAlign: 'right', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: '20', borderStyle: 'solid', borderWidth: '0.5', padding: '10', borderRadius: '5px', marginBottom: '20px' },
@@ -99,9 +99,10 @@ const Pdf2 = ({ data }) => {
   const totalLensPrice = data.reduce((sum, item) => sum + item.LensPrice, 0);
   const totalCoatingsPrice = data.reduce((sum, item) => sum + item.CoatingsPrice, 0);
   const totalTintPrice = data.reduce((sum, item) => sum + item.TintPrice, 0);
-  const totalGeneral = data.reduce((sum, item) => sum + item.total, 0);
+
   // Obtener la fecha formateada (YYYY-MM)
   const formattedDate = data.length > 0 ? format(parseISO(data[0].fecha), 'yyyy-MM', { locale: enUS }) : '';
+
   // Obtener el mes y año formateados para el texto de resumen
   const monthYearText = data.length > 0 
     ? `The values represent the total sum of sales for the month of ${format(parseISO(data[0].fecha), 'MMMM', { locale: enUS })} in the year ${format(parseISO(data[0].fecha), 'yyyy')}.`
@@ -128,24 +129,18 @@ const Pdf2 = ({ data }) => {
                 <Text style={styles.tableCellHeader}>Fecha</Text>
               </View>
               <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Lens Totals</Text>
-              </View>
-              <View style={styles.tableColHeader}>
                 <Text style={styles.tableCellHeader}>Coatings Totals</Text>
               </View>
               <View style={styles.tableColHeader}>
                 <Text style={styles.tableCellHeader}>Tint Totals</Text>
               </View>
               <View style={styles.tableColHeader}>
-                <Text style={styles.tableCellHeader}>Total</Text>
+                <Text style={styles.tableCellHeader}>Lens Totals</Text>
               </View>
             </View>
-            <View style={styles.tableRow} wrap={false}> {/* Agregar wrap={false} */}
+            <View style={styles.tableRow} wrap={false}>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>{formattedDate}</Text>
-              </View>
-              <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>${totalLensPrice.toFixed(2)}</Text>
               </View>
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>${totalCoatingsPrice.toFixed(2)}</Text>
@@ -154,7 +149,7 @@ const Pdf2 = ({ data }) => {
                 <Text style={styles.tableCell}>${totalTintPrice.toFixed(2)}</Text>
               </View>
               <View style={styles.tableCol}>
-                <Text style={styles.tableCell}>${totalGeneral.toFixed(2)}</Text>
+                <Text style={styles.tableCell}>${totalLensPrice.toFixed(2)}</Text>
               </View>
             </View>
           </View>
@@ -163,7 +158,7 @@ const Pdf2 = ({ data }) => {
               <Text style={styles.totalText}>Grand Total: </Text>
             </View>
             <View>
-              <Text style={styles.totalText}> ${totalGeneral.toFixed(2)}</Text>
+              <Text style={styles.totalText}> ${totalLensPrice.toFixed(2)}</Text>
             </View>
           </View>
           <View>
