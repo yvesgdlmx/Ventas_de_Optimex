@@ -1,33 +1,27 @@
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from '../layouts/Layout';
-import Index from '../components/TablasDiario';
-import Prueba from '../paginas/Prueba';
-import Secciones from '../paginas/Secciones';
-import TablaSemanalCobrados from '../components/TablaSemanalCobrados';
-import TablaSemanalNoCobrados from '../components/tablaSemanalNocobrados';
-import TablaCobrados from '../components/TablaCobrados';
-import TablaNoCobrados from '../components/TablaNoCobrados';
-import './index.css'
-import TablasDiario from '../components/TablasDiario';
+import './index.css';
+
+const InkCobrados = lazy(() => import('../paginas/InkCobrados'));
+const InkNoCobrados = lazy(() => import('../paginas/InkNoCobrados'));
+const InkFacturasPorDia = lazy(() => import('../paginas/InkFacturasPorDia'));
+const InkMermas = lazy(() => import('../paginas/InkMermas'))
 
 function App() {
-
   return (
-    <>
-      <Router>
-          <Routes>
-              <Route path='/' element={<Layout/>}>
-                <Route index element={<Secciones/>} />
-                <Route path='/diarios' element={<TablasDiario/>}/>
-                <Route path='/semanales' element={<TablaSemanalCobrados/>} />
-                <Route path='/semanales-sinCobrar' element={<TablaSemanalNoCobrados/>}/>
-                <Route path='/cobrados' element={<TablaCobrados/>}/>
-                <Route path='/no-cobrados' element={<TablaNoCobrados/>}/>
-              </Route>
-          </Routes>
-      </Router>
-    </>
-  )
+    <Router>
+      <Suspense fallback={<div>Cargando...</div>}>
+        <Routes>
+          <Route path='/' element={<Layout />}>
+            <Route index element={<InkCobrados />} />
+            <Route path='/facturacion-ink-nocobrados' element={<InkNoCobrados />} />
+            <Route path='/facturacion-ink-agrupacion-diaria' element={<InkFacturasPorDia />} />
+            <Route path='/facturacion-ink-mermas' element={<InkMermas />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </Router>
+  );
 }
-
-export default App
+export default App;

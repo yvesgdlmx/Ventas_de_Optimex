@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from'cors'
 import db from './config/db.js';
 import ordersRoutes from './routes/ordersRoutes.js'
+import mermCostRoutes from './routes/mermCostRoutes.js'
 
 const app = express();
 app.use(express.json());
@@ -19,7 +20,7 @@ try {
 }
 
 //Configurar CORS
-const whitelist = [process.env.FRONTEND_URL];
+/*const whitelist = [process.env.FRONTEND_URL];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -33,7 +34,7 @@ const corsOptions = {
   },
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));*/
 
 const PORT = process.env.PORT || 4000;
 const servidor = app.listen(PORT, () => {
@@ -41,3 +42,4 @@ const servidor = app.listen(PORT, () => {
 });
 
 app.use("/api/orders", ordersRoutes)
+app.use("/api/orders", mermCostRoutes);

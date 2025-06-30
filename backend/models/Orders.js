@@ -73,6 +73,10 @@ const Orders = db.define('orders', {
     Poder: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
+    },
+    click_fee: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false
     }
 }, 
     {
