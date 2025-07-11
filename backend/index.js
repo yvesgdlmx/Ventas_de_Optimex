@@ -20,7 +20,7 @@ try {
 }
 
 //Configurar CORS
-/*const whitelist = [process.env.FRONTEND_URL];
+const whitelist = [process.env.FRONTEND_URL];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -34,7 +34,7 @@ const corsOptions = {
   },
 };
 
-app.use(cors(corsOptions));*/
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 4000;
 const servidor = app.listen(PORT, () => {

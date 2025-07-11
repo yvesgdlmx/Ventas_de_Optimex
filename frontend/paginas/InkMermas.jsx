@@ -27,8 +27,21 @@ const customSelectStyles = {
   }),
   indicatorSeparator: () => null
 };
+// Función para calcular el mes anterior
+const getDefaultMonth = () => {
+  const today = new Date();
+  const currentMonth = today.getMonth() + 1; // De 1 a 12
+  let previousMonth = currentMonth - 1;
+  // Si es enero, el mes anterior es diciembre
+  if (previousMonth === 0) previousMonth = 12;
+  // Aseguramos el formato de dos dígitos
+  const previousMonthStr = previousMonth < 10 ? `0${previousMonth}` : `${previousMonth}`;
+  // Retornamos el objeto correspondiente en monthOptions
+  return monthOptions.find(option => option.value === previousMonthStr);
+};
 const InkMermas = () => {
-  const [selectedMonth, setSelectedMonth] = useState({ value: '05', label: 'Mayo' });
+  const defaultSelectedMonth = getDefaultMonth();
+  const [selectedMonth, setSelectedMonth] = useState(defaultSelectedMonth);
   const [mermCostData, setMermCostData] = useState(null);
   useEffect(() => {
     const obtenerDatosMermCost = async () => {
@@ -100,10 +113,8 @@ const InkMermas = () => {
           }
         </PDFDownloadLink>
       </div>
-      
       {/* Divisor para separar la sección del PDF y la siguiente sección */}
       <div className="w-full border-t-1 shadow-sm border-gray-200"></div>
-      
       {/* Contenedor combinado: Select y Totales */}
       <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-16">
         <div className="bg-white rounded max-w-xs w-full">
