@@ -5,16 +5,17 @@ import clienteAxios from '../config/clienteAxios';
 import PdfCobrados from '../components/pdf_components/PdfCobrados';
 import Totales from '../components/Totales';
 import TablaFacturas from '../components/tables/TablaFacturas';
+import ListaFacturas from '../components/listas/ListaFacturas';
 const InkCobrados = () => {
-  // Arreglo con los nombres de los meses en español
+  // Array con los nombres de los meses en español
   const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
-  // Estados locales: se calcula el mes anterior al actual. Se mantiene el valor numérico en formato "01", "02", etc.
+  // Estados
   const [mes, setMes] = useState(() => {
     const fechaActual = new Date();
-    const mesActual = fechaActual.getMonth() + 1; // getMonth() es 0-indexado, por ello se suma 1
+    const mesActual = fechaActual.getMonth() + 1;
     const mesAnterior = mesActual === 1 ? 12 : mesActual - 1;
     return mesAnterior < 10 ? `0${mesAnterior}` : `${mesAnterior}`;
   });
@@ -35,7 +36,7 @@ const InkCobrados = () => {
     tat: "TAT",
     lensTotal: "LensPrice"
   };
-  // Manejadores para los select y el input de búsqueda
+  // Manejadores de cambios
   const manejarCambioMes = (e) => {
     setMes(e.target.value);
     setPaginaActual(1);
@@ -53,7 +54,7 @@ const InkCobrados = () => {
     try {
       setCargando(true);
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
-      // Ordenamos por Patient (por ejemplo)
+      // Ordenamos, por ejemplo, por Patient.
       const registrosOrdenados = data.sort((a, b) => {
         const patientA = parseFloat(a.Patient) || 0;
         const patientB = parseFloat(b.Patient) || 0;
@@ -89,27 +90,24 @@ const InkCobrados = () => {
       setPaginaActual(nuevaPagina);
     }
   };
-  // Cálculo de totales (en InkCobrados)
+  // Cálculo de totales
   const totalLensPrice = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
   const totalCoatingsPrice = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
   const totalTintPrice = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
-  // Suma total de click_fee
   const totalClickFee = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.click_fee || 0), 0).toFixed(2);
-  // Nuevo total general que engloba totalLensPrice más totalClickFee
   const totalGeneral = (parseFloat(totalLensPrice) + parseFloat(totalClickFee)).toFixed(2);
-  // Obtener el nombre del mes a partir del valor numérico
   const nombreMes = monthNames[parseInt(mes, 10) - 1];
   return (
     <div className="space-y-6">
-      {/* Primer contenedor: Encabezado y botón de descarga PDF */}
-      <div className="flex flex-col items-center justify-center bg-white py-6 shadow-sm rounded border-b-0 border-b-gray-300">
+      {/* Encabezado y botón de descarga PDF */}
+      <div className="flex flex-col items-center justify-center bg-white py-6 shadow-sm rounded border-b border-gray-300">
         <h1 className="text-3xl font-bold mb-2 text-gray-500 uppercase">INK - cobrados</h1>
         <p className="text-sm text-gray-500 mb-4">
-          Mostrando información del mes de ( {nombreMes} )
+          Mostrando información del mes de ({nombreMes})
         </p>
         <PDFDownloadLink
           document={<PdfCobrados data={datosPdf} />}
@@ -136,7 +134,7 @@ const InkCobrados = () => {
           }
         </PDFDownloadLink>
       </div>
-      {/* Segundo contenedor: Sección de Totales (componente Totales) */}
+      {/* Totales */}
       <Totales 
         totalLensPrice={totalLensPrice} 
         totalCoatingsPrice={totalCoatingsPrice} 
@@ -144,23 +142,44 @@ const InkCobrados = () => {
         totalClickFee={totalClickFee}
         totalGeneral={totalGeneral} 
       />
-      {/* Tercer contenedor: Componente TablaGenerica */}
-      <TablaFacturas
-        mes={mes}
-        onMesChange={manejarCambioMes}
-        textoBusqueda={textoBusqueda}
-        onBusquedaChange={manejarCambioBusqueda}
-        columnaBusqueda={columnaBusqueda}
-        onColumnaBusquedaChange={manejarCambioColumnaBusqueda}
-        cargando={cargando}
-        registrosActuales={registrosActuales}
-        totalRegistros={registrosFiltrados.length}
-        indicePrimerRegistro={indicePrimerRegistro}
-        indiceUltimoRegistro={indiceUltimoRegistro}
-        totalPaginas={totalPaginas}
-        paginaActual={paginaActual}
-        paginar={paginar}
-      />
+      {/* Vista de la tabla para pantallas medianas y grandes */}
+      <div className="hidden md:block">
+        <TablaFacturas
+          mes={mes}
+          onMesChange={manejarCambioMes}
+          textoBusqueda={textoBusqueda}
+          onBusquedaChange={manejarCambioBusqueda}
+          columnaBusqueda={columnaBusqueda}
+          onColumnaBusquedaChange={manejarCambioColumnaBusqueda}
+          cargando={cargando}
+          registrosActuales={registrosActuales}
+          totalRegistros={registrosFiltrados.length}
+          indicePrimerRegistro={indicePrimerRegistro}
+          indiceUltimoRegistro={indiceUltimoRegistro}
+          totalPaginas={totalPaginas}
+          paginaActual={paginaActual}
+          paginar={paginar}
+        />
+      </div>
+      {/* Vista de lista (cards) para pantallas pequeñas */}
+      <div className="block md:hidden">
+        <ListaFacturas
+          mes={mes}
+          onMesChange={manejarCambioMes}
+          textoBusqueda={textoBusqueda}
+          onBusquedaChange={manejarCambioBusqueda}
+          columnaBusqueda={columnaBusqueda}
+          onColumnaBusquedaChange={manejarCambioColumnaBusqueda}
+          cargando={cargando}
+          registrosActuales={registrosActuales}
+          totalRegistros={registrosFiltrados.length}
+          indicePrimerRegistro={indicePrimerRegistro}
+          indiceUltimoRegistro={indiceUltimoRegistro}
+          totalPaginas={totalPaginas}
+          paginaActual={paginaActual}
+          paginar={paginar}
+        />
+      </div>
     </div>
   );
 };

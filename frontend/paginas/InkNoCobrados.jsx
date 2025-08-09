@@ -5,6 +5,7 @@ import clienteAxios from '../config/clienteAxios';
 import PdfNoCobrados from '../components/pdf_components/PdfNoCobrados';
 import Totales from '../components/Totales';
 import TablaFacturas from '../components/tables/TablaFacturas';
+import ListaFacturas from '../components/listas/ListaFacturas';
 const InkNoCobrados = () => {
   // Array con los nombres de los meses en español
   const monthNames = [
@@ -18,7 +19,6 @@ const InkNoCobrados = () => {
     const mesAnterior = mesActual === 1 ? 12 : mesActual - 1;
     return mesAnterior < 10 ? `0${mesAnterior}` : `${mesAnterior}`;
   });
-  
   const [registros, setRegistros] = useState([]);
   const [pdfData, setPdfData] = useState([]);
   const [textoBusqueda, setTextoBusqueda] = useState("");
@@ -26,7 +26,6 @@ const InkNoCobrados = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const registrosPorPagina = 8;
   const [cargando, setCargando] = useState(false);
-  
   // Mapeo de columnas para la búsqueda
   const mapeoColumnas = {
     fecha: "ShipDate",
@@ -61,7 +60,7 @@ const InkNoCobrados = () => {
         parseFloat(registro.CoatingsPrice || 0) === 0 &&
         parseFloat(registro.TintPrice || 0) === 0
       );
-      // Ordenar los registros por Patient (por ejemplo)
+      // Ordenar los registros (por ejemplo, por Patient)
       const registrosOrdenados = registrosNoCobrados.sort((a, b) => {
         const patientA = parseFloat(a.Patient) || 0;
         const patientB = parseFloat(b.Patient) || 0;
@@ -97,27 +96,27 @@ const InkNoCobrados = () => {
       setPaginaActual(nuevaPagina);
     }
   };
-  // Cálculo de totales (en InkCobrados)
-const totalLensPrice = registros.reduce((acumulado, registro) =>
-  acumulado + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
-const totalCoatingsPrice = registros.reduce((acumulado, registro) =>
-  acumulado + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
-const totalTintPrice = registros.reduce((acumulado, registro) =>
-  acumulado + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
-// Nuevo: Suma total de click_fee
-const totalClickFee = registros.reduce((acumulado, registro) =>
-  acumulado + parseFloat(registro.click_fee || 0), 0).toFixed(2);
-// Conservamos totalGeneral (en tu caso se usa totalLensPrice)
-const totalGeneral = totalLensPrice;
+  // Cálculo de totales (en InkNoCobrados)
+  const totalLensPrice = registros.reduce((acumulado, registro) =>
+    acumulado + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
+  const totalCoatingsPrice = registros.reduce((acumulado, registro) =>
+    acumulado + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
+  const totalTintPrice = registros.reduce((acumulado, registro) =>
+    acumulado + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
+  // Suma total de click_fee
+  const totalClickFee = registros.reduce((acumulado, registro) =>
+    acumulado + parseFloat(registro.click_fee || 0), 0).toFixed(2);
+  // En este caso, definimos totalGeneral según la necesidad (aquí usamos el LensPrice)
+  const totalGeneral = totalLensPrice;
   // Obtener el nombre del mes a partir del valor numérico
   const nombreMes = monthNames[parseInt(mes, 10) - 1];
   return (
     <div className="space-y-6">
       {/* Encabezado: título, mes y botón de descarga PDF */}
-      <div className="flex flex-col items-center justify-center bg-white py-6 shadow-sm rounded border-b-0 border-b-gray-300">
+      <div className="flex flex-col items-center justify-center bg-white py-6 shadow-sm rounded border-b border-gray-300">
         <h1 className="text-3xl font-bold mb-2 uppercase text-gray-500">ink - no cobrados</h1>
         <p className="text-sm text-gray-500 mb-4">
-          Mostrando información del mes de ( {nombreMes} )
+          Mostrando información del mes de ({nombreMes})
         </p>
         <PDFDownloadLink
           document={<PdfNoCobrados data={pdfData} />}
@@ -144,7 +143,6 @@ const totalGeneral = totalLensPrice;
           }
         </PDFDownloadLink>
       </div>
-      
       {/* Sección de Totales */}
       <Totales 
         totalLensPrice={totalLensPrice} 
@@ -153,24 +151,44 @@ const totalGeneral = totalLensPrice;
         totalClickFee={totalClickFee}
         totalGeneral={totalGeneral} 
       />
-      
-      {/* Tabla Genérica con filtrado por columnas */}
-      <TablaFacturas
-        mes={mes}
-        onMesChange={manejarCambioMes}
-        textoBusqueda={textoBusqueda}
-        onBusquedaChange={manejarCambioBusqueda}
-        columnaBusqueda={columnaBusqueda}
-        onColumnaBusquedaChange={manejarCambioColumnaBusqueda}
-        cargando={cargando}
-        registrosActuales={registrosActuales}
-        totalRegistros={registrosFiltrados.length}
-        indicePrimerRegistro={indicePrimerRegistro}
-        indiceUltimoRegistro={indiceUltimoRegistro}
-        totalPaginas={totalPaginas}
-        paginaActual={paginaActual}
-        paginar={paginar}
-      />
+      {/* Vista de tabla para pantallas medianas y grandes */}
+      <div className="hidden md:block">
+        <TablaFacturas
+          mes={mes}
+          onMesChange={manejarCambioMes}
+          textoBusqueda={textoBusqueda}
+          onBusquedaChange={manejarCambioBusqueda}
+          columnaBusqueda={columnaBusqueda}
+          onColumnaBusquedaChange={manejarCambioColumnaBusqueda}
+          cargando={cargando}
+          registrosActuales={registrosActuales}
+          totalRegistros={registrosFiltrados.length}
+          indicePrimerRegistro={indicePrimerRegistro}
+          indiceUltimoRegistro={indiceUltimoRegistro}
+          totalPaginas={totalPaginas}
+          paginaActual={paginaActual}
+          paginar={paginar}
+        />
+      </div>
+      {/* Vista de lista (cards) para pantallas pequeñas */}
+      <div className="block md:hidden">
+        <ListaFacturas
+          mes={mes}
+          onMesChange={manejarCambioMes}
+          textoBusqueda={textoBusqueda}
+          onBusquedaChange={manejarCambioBusqueda}
+          columnaBusqueda={columnaBusqueda}
+          onColumnaBusquedaChange={manejarCambioColumnaBusqueda}
+          cargando={cargando}
+          registrosActuales={registrosActuales}
+          totalRegistros={registrosFiltrados.length}
+          indicePrimerRegistro={indicePrimerRegistro}
+          indiceUltimoRegistro={indiceUltimoRegistro}
+          totalPaginas={totalPaginas}
+          paginaActual={paginaActual}
+          paginar={paginar}
+        />
+      </div>
     </div>
   );
 };
