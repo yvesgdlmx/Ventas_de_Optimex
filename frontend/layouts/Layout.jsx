@@ -97,6 +97,17 @@ const Layout = () => {
                     INK - Mermas
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="/ink-consumo-material"
+                    className={({ isActive }) =>
+                      "block px-6 py-2 rounded " +
+                      (isActive ? "bg-gray-200 text-gray-700" : "text-gray-500 hover:bg-gray-100")
+                    }
+                  >
+                    INK - Consumo De Material
+                  </NavLink>
+                </li>
               </ul>
             )}
           </ul>
@@ -177,6 +188,18 @@ const Layout = () => {
                     }
                   >
                     INK - Mermas
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/ink-consumo-material"
+                    onClick={() => setSidebarOpen(false)}
+                    className={({ isActive }) =>
+                      "block px-6 py-2 rounded " +
+                      (isActive ? "bg-gray-200 text-gray-700" : "text-gray-500 hover:bg-gray-100")
+                    }
+                  >
+                    INK - Consumo de material
                   </NavLink>
                 </li>
               </ul>

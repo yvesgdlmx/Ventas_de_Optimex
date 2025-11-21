@@ -4,6 +4,7 @@ import cors from'cors'
 import db from './config/db.js';
 import ordersRoutes from './routes/ordersRoutes.js'
 import mermCostRoutes from './routes/mermCostRoutes.js'
+import consumoMaterialRoutes from './routes/consumoMaterialRoutes.js'
 
 const app = express();
 app.use(express.json());
@@ -41,5 +42,6 @@ const servidor = app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
-app.use("/api/orders", ordersRoutes)
+app.use("/api/orders", ordersRoutes);
 app.use("/api/orders", mermCostRoutes);
+app.use("/api/consumo-material", consumoMaterialRoutes);

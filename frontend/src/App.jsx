@@ -7,6 +7,7 @@ const InkCobrados = lazy(() => import('../paginas/InkCobrados'));
 const InkNoCobrados = lazy(() => import('../paginas/InkNoCobrados'));
 const InkFacturasPorDia = lazy(() => import('../paginas/InkFacturasPorDia'));
 const InkMermas = lazy(() => import('../paginas/InkMermas'))
+const InkConsumoMaterial = lazy(() => import('../paginas/InkConsumoMaterial'))
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path='/facturacion-ink-nocobrados' element={<InkNoCobrados />} />
             <Route path='/facturacion-ink-agrupacion-diaria' element={<InkFacturasPorDia />} />
             <Route path='/facturacion-ink-mermas' element={<InkMermas />} />
+            <Route path='/ink-consumo-material' element={<InkConsumoMaterial/>} />
           </Route>
         </Routes>
       </Suspense>
