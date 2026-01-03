@@ -4,7 +4,7 @@ import { obtenerRegistros, obtenerRegistrosPorMes, obtenerRegistrosPorRangoFecha
 const router = express.Router();
 
 router.get("/get-all", obtenerRegistros);
-router.get('/get-month/:mes', obtenerRegistrosPorMes);
+router.get('/get-month/:ano/:mes', obtenerRegistrosPorMes);
 router.get('/get-week/:ano/:mes/:semana', obtenerRegistrosPorSemana); // Cambiado 'año' por 'ano'
 router.get('/get-by-date/:fechaInicio/:fechaFin', obtenerRegistrosPorRangoFechas); // Cambiado 'año' por 'ano'
 

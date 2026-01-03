@@ -21,6 +21,13 @@ const InkFacturasPorDia = () => {
     const mesAnterior = mesActual === 1 ? 12 : mesActual - 1;
     return mesAnterior < 10 ? `0${mesAnterior}` : `${mesAnterior}`;
   });
+  const [ano, setAno] = useState(() => {
+    const fechaActual = new Date();
+    const mesActual = fechaActual.getMonth() + 1;
+    const anoActual = fechaActual.getFullYear();
+    // Si el mes actual es enero, el mes anterior es diciembre del año pasado
+    return mesActual === 1 ? anoActual - 1 : anoActual;
+  });
   const [totalesPorDia, setTotalesPorDia] = useState([]);
   const [pdfData, setPdfData] = useState([]);
   const [textoBusqueda, setTextoBusqueda] = useState("");
@@ -40,6 +47,10 @@ const InkFacturasPorDia = () => {
     setMes(e.target.value);
     setPaginaActual(1);
   };
+  const manejarCambioAno = (e) => {
+    setAno(e.target.value);
+    setPaginaActual(1);
+  };
   const manejarCambioBusqueda = (e) => {
     setTextoBusqueda(e.target.value);
     setPaginaActual(1);
@@ -52,7 +63,7 @@ const InkFacturasPorDia = () => {
   const obtenerYAgruparRegistros = async () => {
     try {
       setCargando(true);
-      const { data } = await clienteAxios(`/orders/get-month/${mes}`);
+      const { data } = await clienteAxios(`/orders/get-month/${ano}/${mes}`);
       // Agrupar por día utilizando la fecha formateada "yyyy-MM-dd"
       const agrupados = data.reduce((acc, registro) => {
         const fechaISO = parseISO(registro.ShipDate);
@@ -86,7 +97,7 @@ const InkFacturasPorDia = () => {
   };
   useEffect(() => {
     obtenerYAgruparRegistros();
-  }, [mes]);
+  }, [mes, ano]);
   // Filtrado de registros según texto y columna
   const registrosFiltrados = totalesPorDia.filter((registro) => {
     if (textoBusqueda.trim() === "") return true;
@@ -121,12 +132,12 @@ const InkFacturasPorDia = () => {
           ink - total por día
         </h1>
         <p className="text-sm text-gray-500 mb-4">
-          Mostrando información del mes de ({nombreMes})
+          Mostrando información del mes de {nombreMes} de {ano}
         </p>
         <div className="flex space-x-4">
           <PDFDownloadLink
             document={<Pdf data={pdfData} />}
-            fileName={`ventas_detallado_${mes}.pdf`}
+            fileName={`ventas_detallado_${ano}_${mes}.pdf`}
             className="flex items-center"
           >
             {({ loading }) =>
@@ -150,7 +161,7 @@ const InkFacturasPorDia = () => {
           </PDFDownloadLink>
           <PDFDownloadLink
             document={<Pdf2 data={pdfData} />}
-            fileName={`ventas_globales_${mes}.pdf`}
+            fileName={`ventas_globales_${ano}_${mes}.pdf`}
             className="flex items-center"
           >
             {({ loading }) =>
@@ -187,6 +198,8 @@ const InkFacturasPorDia = () => {
         <TablaFacturasPorDia
           mes={mes}
           onMesChange={manejarCambioMes}
+          ano={ano}
+          onAnoChange={manejarCambioAno}
           textoBusqueda={textoBusqueda}
           onBusquedaChange={manejarCambioBusqueda}
           columnaBusqueda={columnaBusqueda}
@@ -206,6 +219,8 @@ const InkFacturasPorDia = () => {
         <ListaFacturasPorDia
           mes={mes}
           onMesChange={manejarCambioMes}
+          ano={ano}
+          onAnoChange={manejarCambioAno}
           textoBusqueda={textoBusqueda}
           onBusquedaChange={manejarCambioBusqueda}
           columnaBusqueda={columnaBusqueda}

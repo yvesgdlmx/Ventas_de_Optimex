@@ -19,6 +19,13 @@ const InkCobrados = () => {
     const mesAnterior = mesActual === 1 ? 12 : mesActual - 1;
     return mesAnterior < 10 ? `0${mesAnterior}` : `${mesAnterior}`;
   });
+  const [ano, setAno] = useState(() => {
+    const fechaActual = new Date();
+    const mesActual = fechaActual.getMonth() + 1;
+    const anoActual = fechaActual.getFullYear();
+    // Si el mes actual es enero, el mes anterior es diciembre del año pasado
+    return mesActual === 1 ? anoActual - 1 : anoActual;
+  });
   const [registros, setRegistros] = useState([]);
   const [datosPdf, setDatosPdf] = useState([]);
   const [textoBusqueda, setTextoBusqueda] = useState("");
@@ -41,6 +48,10 @@ const InkCobrados = () => {
     setMes(e.target.value);
     setPaginaActual(1);
   };
+  const manejarCambioAno = (e) => {
+    setAno(e.target.value);
+    setPaginaActual(1);
+  };
   const manejarCambioBusqueda = (e) => {
     setTextoBusqueda(e.target.value);
     setPaginaActual(1);
@@ -53,7 +64,7 @@ const InkCobrados = () => {
   const obtenerRegistros = async () => {
     try {
       setCargando(true);
-      const { data } = await clienteAxios(`/orders/get-month/${mes}`);
+      const { data } = await clienteAxios(`/orders/get-month/${ano}/${mes}`);
       // Ordenamos, por ejemplo, por Patient.
       const registrosOrdenados = data.sort((a, b) => {
         const patientA = parseFloat(a.Patient) || 0;
@@ -70,7 +81,7 @@ const InkCobrados = () => {
   };
   useEffect(() => {
     obtenerRegistros();
-  }, [mes]);
+  }, [mes, ano]);
   // Filtrado de registros de acuerdo al texto de búsqueda
   const registrosFiltrados = registros.filter((registro) => {
     if (textoBusqueda.trim() === "") return true;
@@ -107,11 +118,11 @@ const InkCobrados = () => {
       <div className="flex flex-col items-center justify-center bg-white py-6 shadow-sm rounded border-b border-gray-300">
         <h1 className="text-3xl font-bold mb-2 text-gray-500 uppercase">INK - cobrados</h1>
         <p className="text-sm text-gray-500 mb-4">
-          Mostrando información del mes de ({nombreMes})
+          Mostrando información del mes de {nombreMes} de {ano}
         </p>
         <PDFDownloadLink
           document={<PdfCobrados data={datosPdf} />}
-          fileName={`cobrados_${mes}.pdf`}
+          fileName={`cobrados_${ano}_${mes}.pdf`}
           className="flex items-center"
         >
           {({ loading }) =>
@@ -147,6 +158,8 @@ const InkCobrados = () => {
         <TablaFacturas
           mes={mes}
           onMesChange={manejarCambioMes}
+          ano={ano}
+          onAnoChange={manejarCambioAno}
           textoBusqueda={textoBusqueda}
           onBusquedaChange={manejarCambioBusqueda}
           columnaBusqueda={columnaBusqueda}
@@ -166,6 +179,8 @@ const InkCobrados = () => {
         <ListaFacturas
           mes={mes}
           onMesChange={manejarCambioMes}
+          ano={ano}
+          onAnoChange={manejarCambioAno}
           textoBusqueda={textoBusqueda}
           onBusquedaChange={manejarCambioBusqueda}
           columnaBusqueda={columnaBusqueda}

@@ -3,6 +3,8 @@ import { FaSpinner } from 'react-icons/fa';
 const ListaFacturasPorDia = ({
   mes,
   onMesChange,
+  ano,
+  onAnoChange,
   textoBusqueda,
   onBusquedaChange,
   columnaBusqueda,
@@ -21,6 +23,21 @@ const ListaFacturasPorDia = ({
       {/* Sección de selectores y filtros */}
       <div className="mb-4 space-y-2">
         <div className="flex items-center space-x-2">
+          <label htmlFor="ano" className="text-sm text-gray-600">
+            Año:
+          </label>
+          <select
+            id="ano"
+            value={ano}
+            onChange={onAnoChange}
+            className="bg-gray-50 text-gray-600 text-sm rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 p-1.5"
+          >
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+          </select>
           <label htmlFor="mes" className="text-sm text-gray-600">
             Mes:
           </label>

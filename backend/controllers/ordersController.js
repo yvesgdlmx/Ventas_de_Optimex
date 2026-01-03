@@ -10,10 +10,11 @@ const obtenerRegistros = async (req, res) => {
 
 const obtenerRegistrosPorMes = async (req, res) => {
 
-    const {mes} = req.params;
+    const {ano, mes} = req.params;
 
     
     // Imprime los parámetros para verificar
+    console.log('Año:', ano);
     console.log('Mes:', mes);
 
     const registros = await Orders.findAll({
@@ -22,6 +23,7 @@ const obtenerRegistrosPorMes = async (req, res) => {
                 {
                     fecha: {
                         [Sequelize.Op.and]: [
+                            Sequelize.where(Sequelize.fn('YEAR', Sequelize.col('ShipDate')), ano),
                             Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('ShipDate')), mes)
                         ]
                     }

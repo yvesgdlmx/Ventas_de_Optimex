@@ -19,6 +19,13 @@ const InkNoCobrados = () => {
     const mesAnterior = mesActual === 1 ? 12 : mesActual - 1;
     return mesAnterior < 10 ? `0${mesAnterior}` : `${mesAnterior}`;
   });
+  const [ano, setAno] = useState(() => {
+    const fechaActual = new Date();
+    const mesActual = fechaActual.getMonth() + 1;
+    const anoActual = fechaActual.getFullYear();
+    // Si el mes actual es enero, el mes anterior es diciembre del año pasado
+    return mesActual === 1 ? anoActual - 1 : anoActual;
+  });
   const [registros, setRegistros] = useState([]);
   const [pdfData, setPdfData] = useState([]);
   const [textoBusqueda, setTextoBusqueda] = useState("");
@@ -41,6 +48,10 @@ const InkNoCobrados = () => {
     setMes(e.target.value);
     setPaginaActual(1);
   };
+  const manejarCambioAno = (e) => {
+    setAno(e.target.value);
+    setPaginaActual(1);
+  };
   const manejarCambioBusqueda = (e) => {
     setTextoBusqueda(e.target.value);
     setPaginaActual(1);
@@ -53,7 +64,7 @@ const InkNoCobrados = () => {
   const obtenerRegistros = async () => {
     try {
       setCargando(true);
-      const { data } = await clienteAxios(`/orders/get-month/${mes}`);
+      const { data } = await clienteAxios(`/orders/get-month/${ano}/${mes}`);
       // Filtrar registros donde LensPrice, CoatingsPrice y TintPrice sean 0
       const registrosNoCobrados = data.filter(registro =>
         parseFloat(registro.LensPrice || 0) === 0 &&
@@ -76,7 +87,7 @@ const InkNoCobrados = () => {
   };
   useEffect(() => {
     obtenerRegistros();
-  }, [mes]);
+  }, [mes, ano]);
   // Filtrado de registros según el texto de búsqueda y la columna seleccionada
   const registrosFiltrados = registros.filter((registro) => {
     if (textoBusqueda.trim() === "") return true;
@@ -116,11 +127,11 @@ const InkNoCobrados = () => {
       <div className="flex flex-col items-center justify-center bg-white py-6 shadow-sm rounded border-b border-gray-300">
         <h1 className="text-3xl font-bold mb-2 uppercase text-gray-500">ink - no cobrados</h1>
         <p className="text-sm text-gray-500 mb-4">
-          Mostrando información del mes de ({nombreMes})
+          Mostrando información del mes de {nombreMes} de {ano}
         </p>
         <PDFDownloadLink
           document={<PdfNoCobrados data={pdfData} />}
-          fileName={`no_cobrados_${mes}.pdf`}
+          fileName={`no_cobrados_${ano}_${mes}.pdf`}
           className="flex items-center"
         >
           {({ loading }) =>
@@ -156,6 +167,8 @@ const InkNoCobrados = () => {
         <TablaFacturas
           mes={mes}
           onMesChange={manejarCambioMes}
+          ano={ano}
+          onAnoChange={manejarCambioAno}
           textoBusqueda={textoBusqueda}
           onBusquedaChange={manejarCambioBusqueda}
           columnaBusqueda={columnaBusqueda}
@@ -175,6 +188,8 @@ const InkNoCobrados = () => {
         <ListaFacturas
           mes={mes}
           onMesChange={manejarCambioMes}
+          ano={ano}
+          onAnoChange={manejarCambioAno}
           textoBusqueda={textoBusqueda}
           onBusquedaChange={manejarCambioBusqueda}
           columnaBusqueda={columnaBusqueda}

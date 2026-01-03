@@ -3,6 +3,8 @@ import { FaAngleDoubleLeft, FaAngleDoubleRight, FaChevronLeft, FaChevronRight, F
 const TablaFacturas = ({
   mes,
   onMesChange,
+  ano,
+  onAnoChange,
   textoBusqueda,
   onBusquedaChange,
   columnaBusqueda,
@@ -105,8 +107,21 @@ const TablaFacturas = ({
     <div className="bg-white py-5 px-14 rounded overflow-x-auto" style={{ minHeight: '300px' }}>
       {/* Sección de selectores: Mes, búsqueda y columna de búsqueda */}
       <div className="mb-4 flex items-center justify-between">
-        {/* Selector de mes */}
+        {/* Selector de año y mes */}
         <div className="flex items-center space-x-2">
+          <label htmlFor="ano" className="text-sm text-gray-600">Año:</label>
+          <select
+            id="ano"
+            value={ano}
+            onChange={onAnoChange}
+            className="bg-gray-50 text-gray-600 text-sm rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 p-1.5"
+          >
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+          </select>
           <label htmlFor="mes" className="text-sm text-gray-600">Mes:</label>
           <select
             id="mes"
